@@ -8,6 +8,13 @@ import org.apache.spark.streaming.dstream.DStream
 
 import scala.reflect.ClassTag
 
+object KafkaWriter {
+  implicit def dStreamToKafkaWriter[T: ClassTag, K, V](dStream: DStream[T]): KafkaWriter[T] =
+    new DStreamKafkaWriter[T](dStream)
+  implicit def rddToKafkaWriter[T: ClassTag, K, V](rdd: RDD[T]): KafkaWriter[T] =
+    new RDDKafkaWriter[T](rdd)
+}
+
 abstract class KafkaWriter[T: ClassTag] {
   def writeToKafka[K, V](
     producerConfig: Properties,
