@@ -7,7 +7,8 @@ import org.apache.spark.rdd.RDD
 
 import scala.reflect.ClassTag
 
-class RDDKafkaWriter[T: ClassTag](@transient rdd: RDD[T]) extends KafkaWriter[T] {
+class RDDKafkaWriter[T: ClassTag](@transient rdd: RDD[T])
+    extends KafkaWriter[T] with Serializable {
   override def writeToKafka[K, V](
     producerConfig: Properties,
     transformFunc: T => ProducerRecord[K, V]

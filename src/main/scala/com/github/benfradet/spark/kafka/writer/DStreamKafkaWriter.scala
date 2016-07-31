@@ -7,7 +7,8 @@ import org.apache.spark.streaming.dstream.DStream
 
 import scala.reflect.ClassTag
 
-class DStreamKafkaWriter[T: ClassTag](@transient dStream: DStream[T]) extends KafkaWriter[T] {
+class DStreamKafkaWriter[T: ClassTag](@transient dStream: DStream[T])
+    extends KafkaWriter[T] with Serializable {
   override def writeToKafka[K, V](
     producerConfig: Properties,
     transformFunc: T => ProducerRecord[K, V]

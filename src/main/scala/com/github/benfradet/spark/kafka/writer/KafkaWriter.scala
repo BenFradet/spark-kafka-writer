@@ -15,9 +15,9 @@ object KafkaWriter {
     new RDDKafkaWriter[T](rdd)
 }
 
-abstract class KafkaWriter[T: ClassTag] {
+abstract class KafkaWriter[T: ClassTag] extends Serializable {
   def writeToKafka[K, V](
     producerConfig: Properties,
     transformFunc: T => ProducerRecord[K, V]
-  )
+  ): Unit
 }
