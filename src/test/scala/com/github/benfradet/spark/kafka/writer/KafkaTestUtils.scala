@@ -223,7 +223,7 @@ class KafkaTestUtils {
       f
     }
 
-    def shutdown() {
+    def shutdown(): Unit = {
       factory.shutdown()
       snapshotDir.delete()
       logDir.delete()
