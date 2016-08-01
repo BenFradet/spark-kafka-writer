@@ -8,14 +8,15 @@ import org.apache.spark.SparkConf
 import org.apache.spark.streaming.StreamingContext
 import org.apache.spark.streaming.kafka.KafkaUtils
 import org.scalatest.concurrent.Eventually
-import org.scalatest.{BeforeAndAfterAll, BeforeAndAfter, Matchers, WordSpec}
+import org.scalatest.{BeforeAndAfterEach, BeforeAndAfterAll, Matchers, WordSpec}
 
 import scala.collection.mutable.ArrayBuffer
+import scala.util.Random
 
 trait SKRSpec
   extends WordSpec
   with Matchers
-  with BeforeAndAfter
+  with BeforeAndAfterEach
   with BeforeAndAfterAll
   with Eventually {
 
@@ -33,6 +34,12 @@ trait SKRSpec
       ktu.tearDown()
       ktu = null
     }
+  }
+
+  var topic: String = _
+  override def beforeEach(): Unit = {
+    topic = s"topic-${Random.nextInt()}"
+    ktu.createTopics(topic)
   }
 
   def collect(ssc: StreamingContext, topic: String): ArrayBuffer[String] = {
