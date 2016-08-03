@@ -5,7 +5,7 @@ import java.util.Properties
 import kafka.serializer.StringDecoder
 import org.apache.kafka.common.serialization.StringSerializer
 import org.apache.spark.SparkConf
-import org.apache.spark.streaming.StreamingContext
+import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.streaming.kafka.KafkaUtils
 import org.scalatest.concurrent.Eventually
 import org.scalatest.{BeforeAndAfterEach, BeforeAndAfterAll, Matchers, WordSpec}
@@ -37,7 +37,15 @@ trait SKRSpec
   }
 
   var topic: String = _
+  var ssc: StreamingContext = _
+  override def afterEach(): Unit = {
+    if (ssc != null) {
+      ssc.stop()
+      ssc = null
+    }
+  }
   override def beforeEach(): Unit = {
+    ssc = new StreamingContext(sparkConf, Seconds(1))
     topic = s"topic-${Random.nextInt()}"
     ktu.createTopics(topic)
   }

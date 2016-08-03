@@ -3,25 +3,11 @@ package com.github.benfradet.spark.kafka.writer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.dstream.DStream
-import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 import scala.collection.mutable
 import scala.concurrent.duration._
 
 class DStreamKafkaWriterSpec extends SKRSpec {
-
-  var ssc: StreamingContext = _
-  override def afterEach(): Unit = {
-    if (ssc != null) {
-      ssc.stop()
-      ssc = null
-    }
-    super.afterEach()
-  }
-  override def beforeEach(): Unit = {
-    ssc = new StreamingContext(sparkConf, Seconds(1))
-    super.beforeEach()
-  }
 
   "a DStreamKafkaWriter" when {
     "given a dstream" should {
