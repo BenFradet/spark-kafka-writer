@@ -1,22 +1,19 @@
 package com.github.benfradet.spark.kafka.writer
 
 import org.apache.kafka.clients.producer.ProducerRecord
-import org.apache.spark.rdd.RDD
-import org.apache.spark.streaming.dstream.DStream
 
-import scala.collection.mutable
 import scala.concurrent.duration._
 
-class DStreamKafkaWriterSpec extends SKRSpec {
+class RDDKafkaWriterSpec extends SKRSpec {
 
-  "a DStreamKafkaWriter" when {
-    "given a dstream" should {
+  "a RDDKafkaWriterSpec" when {
+    "given a RDD" should {
       "write its content to Kafka" in {
         val localTopic = topic
         val msgs = (1 to 10).map(_.toString)
-        val stream = createDStream(msgs)
+        val rdd = ssc.sparkContext.parallelize(msgs)
         import KafkaWriter._
-        stream.writeToKafka(
+        rdd.writeToKafka(
           producerConfig,
           s => new ProducerRecord[String, String](localTopic, s)
         )
@@ -29,11 +26,5 @@ class DStreamKafkaWriterSpec extends SKRSpec {
         }
       }
     }
-  }
-
-  private def createDStream(seq: Seq[String]): DStream[String] = {
-    val q = mutable.Queue.empty[RDD[String]]
-    q.enqueue(ssc.sparkContext.makeRDD(seq))
-    ssc.queueStream(q)
   }
 }
