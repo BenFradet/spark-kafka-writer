@@ -32,3 +32,5 @@ lazy val root = (project in file("."))
     ),
     scalacOptions ++= compilerOptions
   )
+
+parallelExecution in Test := false
