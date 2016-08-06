@@ -21,6 +21,7 @@ lazy val root = (project in file("."))
     organization := "com.github.benfradet",
     version := "0.1.0-SNAPSHOT",
     scalaVersion := "2.11.8",
+    crossScalaVersions := Seq("2.10.6", "2.11.8"),
     name := "spark-kafka-writer",
     libraryDependencies ++= Seq(
       "org.apache.spark" %% "spark-core",
