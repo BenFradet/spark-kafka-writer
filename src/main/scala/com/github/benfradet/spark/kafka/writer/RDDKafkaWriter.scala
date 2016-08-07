@@ -28,8 +28,17 @@ import org.apache.spark.rdd.RDD
 
 import scala.reflect.ClassTag
 
+/**
+ * Class used for writing [[RDD]]s to Kafka
+ * @param rdd [[RDD]] to be written to Kafka
+ */
 class RDDKafkaWriter[T: ClassTag](@transient rdd: RDD[T])
     extends KafkaWriter[T] with Serializable {
+  /**
+   * Write a [[RDD]] to Kafka
+   * @param producerConfig properties for a [[org.apache.kafka.clients.producer.KafkaProducer]]
+   * @param transformFunc a function used to transform values of T type into [[ProducerRecord]]s
+   */
   override def writeToKafka[K, V](
     producerConfig: Properties,
     transformFunc: T => ProducerRecord[K, V]

@@ -28,8 +28,17 @@ import org.apache.spark.streaming.dstream.DStream
 
 import scala.reflect.ClassTag
 
+/**
+ * Class used for writing [[DStream]]s to Kafka
+ * @param dStream [[DStream]] to be written to Kafka
+ */
 class DStreamKafkaWriter[T: ClassTag](@transient dStream: DStream[T])
     extends KafkaWriter[T] with Serializable {
+  /**
+   * Write a [[DStream]] to Kafka
+   * @param producerConfig properties for a [[org.apache.kafka.clients.producer.KafkaProducer]]
+   * @param transformFunc a function used to transform values of T type into [[ProducerRecord]]s
+   */
   override def writeToKafka[K, V](
     producerConfig: Properties,
     transformFunc: T => ProducerRecord[K, V]

@@ -29,14 +29,62 @@ import org.apache.spark.streaming.dstream.DStream
 
 import scala.reflect.ClassTag
 
+/** Implicit conversions between [[DStream]] -> [[KafkaWriter]] and [[RDD]] -> [[KafkaWriter]] */
 object KafkaWriter {
+  /**
+   * Convert a [[DStream]] to a [[KafkaWriter]] implicitly
+   * @param dStream [[DStream]] to be converted
+   * @return [[KafkaWriter]] ready to write messages to Kafka
+   */
   implicit def dStreamToKafkaWriter[T: ClassTag, K, V](dStream: DStream[T]): KafkaWriter[T] =
     new DStreamKafkaWriter[T](dStream)
+
+  /**
+   * Convert a [[RDD]] to a [[KafkaWriter]] implicitly
+   * @param rdd [[RDD]] to be converted
+   * @return [[KafkaWriter]] ready to write messages to Kafka
+   */
   implicit def rddToKafkaWriter[T: ClassTag, K, V](rdd: RDD[T]): KafkaWriter[T] =
     new RDDKafkaWriter[T](rdd)
 }
 
+/**
+ * Class used to write [[DStream]]s and [[RDD]]s to Kafka
+ * Example usage:
+ * {{{
+ *   import java.util.Properties
+ *
+ *   import com.github.benfradet.spark.kafka.writer.KafkaWriter._
+ *   import org.apache.kafka.common.serialization.StringSerializer
+ *
+ *   val topic = "my-topic"
+ *   val producerConfig = {
+ *     val p = new Properties()
+ *     p.setProperty("bootstrap.servers", "127.0.0.1:9092")
+ *     p.setProperty("key.serializer", classOf[StringSerializer].getName)
+ *     p.setProperty("value.serializer", classOf[StringSerializer].getName)
+ *     p
+ *   }
+ *
+ *   val dStream: DStream[String] = ...
+ *   dStream.writeToKafka(
+ *     producerConfig,
+ *     s => new ProducerRecord[String, String](topic, s)
+ *   )
+ *
+ *   val rdd: RDD[String] = ...
+ *   rdd.writeToKafka(
+ *     producerConfig,
+ *     s => new ProducerRecord[String, String](localTopic, s)
+ *   )
+ * }}}
+ */
 abstract class KafkaWriter[T: ClassTag] extends Serializable {
+  /**
+   * Write a [[DStream]] or [[RDD]] to Kafka
+   * @param producerConfig properties for a [[org.apache.kafka.clients.producer.KafkaProducer]]
+   * @param transformFunc a function used to transform values of T type into [[ProducerRecord]]s
+   */
   def writeToKafka[K, V](
     producerConfig: Properties,
     transformFunc: T => ProducerRecord[K, V]
