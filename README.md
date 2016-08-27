@@ -52,7 +52,7 @@ val producerConfig = {
 val rdd: RDD[String] = ...
 rdd.writeToKafka(
   producerConfig,
-  s => new ProducerRecord[String, String](localTopic, s)
+  s => new ProducerRecord[String, String](topic, s)
 )
 ```
 
