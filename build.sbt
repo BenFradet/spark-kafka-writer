@@ -5,7 +5,7 @@ lazy val buildSettings = Seq(
   crossScalaVersions := Seq("2.10.6", "2.11.8")
 )
 
-lazy val sparkVersion = "1.6.2"
+lazy val sparkVersion = "2.0.0"
 lazy val kafkaVersion = "0.8.2.2"
 
 lazy val compilerOptions = Seq(
@@ -27,7 +27,7 @@ lazy val baseSettings = Seq(
   libraryDependencies ++= Seq(
     "org.apache.spark" %% "spark-core",
     "org.apache.spark" %% "spark-streaming",
-    "org.apache.spark" %% "spark-streaming-kafka"
+    "org.apache.spark" %% "spark-streaming-kafka-0-8"
   ).map(_ % sparkVersion) ++ Seq(
     "org.apache.kafka" %% "kafka" % kafkaVersion,
     "org.scalatest" %% "scalatest" % "2.2.6" % "test"
