@@ -6,7 +6,8 @@ lazy val buildSettings = Seq(
 )
 
 lazy val sparkVersion = "2.0.0"
-lazy val kafkaVersion = "0.8.2.2"
+lazy val kafka08Version = "0.8.2.1"
+lazy val kafka010Version = "0.10.0.0"
 
 lazy val compilerOptions = Seq(
   "-deprecation",
@@ -26,10 +27,8 @@ lazy val compilerOptions = Seq(
 lazy val baseSettings = Seq(
   libraryDependencies ++= Seq(
     "org.apache.spark" %% "spark-core",
-    "org.apache.spark" %% "spark-streaming",
-    "org.apache.spark" %% "spark-streaming-kafka-0-8"
+    "org.apache.spark" %% "spark-streaming"
   ).map(_ % sparkVersion) ++ Seq(
-    "org.apache.kafka" %% "kafka" % kafkaVersion,
     "org.scalatest" %% "scalatest" % "2.2.6" % "test"
   ),
   scalacOptions ++= compilerOptions
@@ -65,10 +64,35 @@ lazy val publishSettings = Seq(
     </developers>
 )
 
+lazy val noPublishSettings = Seq(
+  publish := {},
+  publishLocal := {},
+  publishArtifact := false
+)
+
 lazy val allSettings = baseSettings ++ buildSettings ++ publishSettings
 
-lazy val root = (project in file("."))
-  .settings(name := "spark-kafka-writer")
+lazy val sparkKafkaWriter = (project in file("."))
+  .settings(moduleName := "spark-kafka-writer")
   .settings(allSettings)
+  .settings(noPublishSettings)
+  .aggregate(v08, v010)
 
-parallelExecution in Test := false
+lazy val v08 = (project in file("spark-kafka-0-8-writer"))
+  .settings(moduleName := "spark-kafka-0-8-writer")
+  .settings(allSettings)
+  .settings(libraryDependencies ++= Seq(
+    "org.apache.spark" %% "spark-streaming-kafka-0-8" % sparkVersion,
+    "org.apache.kafka" %% "kafka" % kafka08Version
+  ))
+
+lazy val v010 = (project in file("spark-kafka-0-10-writer"))
+  .settings(moduleName := "spark-kafka-0-10-writer")
+  .settings(allSettings)
+  .settings(libraryDependencies ++= Seq(
+    "org.apache.spark" %% "spark-streaming-kafka-0-10" % sparkVersion,
+    "org.apache.kafka" %% "kafka" % kafka010Version
+  ))
+
+concurrentRestrictions in Global += Tags.limit(Tags.Test, 1)
+fork := true
