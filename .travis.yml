@@ -1,4 +1,13 @@
 language: scala
+
 scala:
   - 2.10.6
   - 2.11.8
+
+branches:
+  only:
+    - master
+
+script:
+  - sbt ++$TRAVIS_SCALA_VERSION "project v08" clean test
+  - sbt ++$TRAVIS_SCALA_VERSION "project v010" clean test

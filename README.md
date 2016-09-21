@@ -9,27 +9,13 @@ Write your `RDD`s and `DStream`s to Kafka seamlessly
 
 ## Installation
 
-spark-kafka-writer is available on maven central:
+spark-kafka-writer is available on maven central with the following coordinates depending on whether
+you're using Kafka 0.8 or 0.10 and your version of Spark:
 
-- if you're using sbt:
-
-```scala
-libraryDependencies ++= Seq(
-  "com.github.benfradet" %% "spark-kafka-writer" % "0.1.0"
-)
-```
-
-- if you're using mvn:
-
-```xml
-<dependencies>
-    <dependency>
-        <groupId>com.github.benfradet</groupId>
-        <artifactId>spark-kafka-writer_${scala.binary.version}</artifactId>
-        <version>0.1.0</version>
-    </dependency>
-</dependencies>
-```
+|   | Kafka 0.8 | Kafka 0.10 |
+|:-:|:-:|:-:|
+| **Spark 1.6.X** | `"com.github.benfradet" %% "spark-kafka-writer" % "0.1.0"` | :x: |
+| **Spark 2.0.X** | `"com.github.benfradet" %% "spark-kafka-0-8-writer" % "0.2.0"` | `"com.github.benfradet" %% "spark-kafka-0-10-writer" % "0.2.0"` |
 
 ## Usage
 
@@ -38,7 +24,8 @@ libraryDependencies ++= Seq(
 ```scala
 import java.util.Properties
 
-import com.github.benfradet.spark.kafka.writer.KafkaWriter._
+// replace by kafka08 if you're using Kafka 0.8
+import com.github.benfradet.spark.kafka010.writer.KafkaWriter._
 import org.apache.kafka.common.serialization.StringSerializer
 
 val topic = "my-topic"
@@ -62,7 +49,8 @@ rdd.writeToKafka(
 ```scala
 import java.util.Properties
 
-import com.github.benfradet.spark.kafka.writer.KafkaWriter._
+// replace by kafka08 if you're using Kafka 0.8
+import com.github.benfradet.spark.kafka010.writer.KafkaWriter._
 import org.apache.kafka.common.serialization.StringSerializer
 
 val topic = "my-topic"
