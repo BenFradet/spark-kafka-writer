@@ -28,7 +28,7 @@ lazy val baseSettings = Seq(
   libraryDependencies ++= Seq(
     "org.apache.spark" %% "spark-core",
     "org.apache.spark" %% "spark-streaming"
-  ).map(_ % sparkVersion) ++ Seq(
+  ).map(_ % sparkVersion % "provided") ++ Seq(
     "org.scalatest" %% "scalatest" % "2.2.6" % "test"
   ),
   scalacOptions ++= compilerOptions
@@ -84,7 +84,7 @@ lazy val v08 = (project in file("spark-kafka-0-8-writer"))
   .settings(libraryDependencies ++= Seq(
     "org.apache.spark" %% "spark-streaming-kafka-0-8" % sparkVersion,
     "org.apache.kafka" %% "kafka" % kafka08Version
-  ))
+  ).map(_ % "provided"))
 
 lazy val v010 = (project in file("spark-kafka-0-10-writer"))
   .settings(moduleName := "spark-kafka-0-10-writer")
@@ -92,7 +92,7 @@ lazy val v010 = (project in file("spark-kafka-0-10-writer"))
   .settings(libraryDependencies ++= Seq(
     "org.apache.spark" %% "spark-streaming-kafka-0-10" % sparkVersion,
     "org.apache.kafka" %% "kafka" % kafka010Version
-  ))
+  ).map(_ % "provided"))
 
 concurrentRestrictions in Global += Tags.limit(Tags.Test, 1)
 fork := true
