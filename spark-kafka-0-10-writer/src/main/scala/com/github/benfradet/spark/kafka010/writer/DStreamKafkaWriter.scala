@@ -32,7 +32,7 @@ import scala.reflect.ClassTag
  * Class used for writing [[DStream]]s to Kafka
  * @param dStream [[DStream]] to be written to Kafka
  */
-class DStreamKafkaWriter[T: ClassTag](@transient dStream: DStream[T])
+class DStreamKafkaWriter[T: ClassTag](@transient private val dStream: DStream[T])
     extends KafkaWriter[T] with Serializable {
   /**
    * Write a [[DStream]] to Kafka

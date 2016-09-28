@@ -32,7 +32,7 @@ import scala.reflect.ClassTag
  * Class used for writing [[RDD]]s to Kafka
  * @param rdd [[RDD]] to be written to Kafka
  */
-class RDDKafkaWriter[T: ClassTag](@transient rdd: RDD[T])
+class RDDKafkaWriter[T: ClassTag](@transient private val rdd: RDD[T])
     extends KafkaWriter[T] with Serializable {
   /**
    * Write a [[RDD]] to Kafka
