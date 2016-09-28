@@ -36,7 +36,6 @@ class DStreamKafkaWriterSpec extends SKRSpec {
         val localTopic = topic
         val msgs = (1 to 10).map(_.toString)
         val stream = createDStream(msgs)
-        import KafkaWriter._
         stream.writeToKafka(
           producerConfig,
           s => new ProducerRecord[String, String](localTopic, s)
