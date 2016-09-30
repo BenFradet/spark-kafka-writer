@@ -1,6 +1,7 @@
 # spark-kafka-writer
 
 [![Build Status](https://travis-ci.org/BenFradet/spark-kafka-writer.svg?branch=master)](https://travis-ci.org/BenFradet/spark-kafka-writer)
+[![codecov](https://codecov.io/gh/BenFradet/spark-kafka-writer/branch/master/graph/badge.svg)](https://codecov.io/gh/BenFradet/spark-kafka-writer)
 [![Join the chat at https://gitter.im/BenFradet/spark-kafka-writer](https://badges.gitter.im/BenFradet/spark-kafka-writer.svg)](https://gitter.im/BenFradet/spark-kafka-writer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.benfradet/spark-kafka-writer_2.11.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.benfradet/spark-kafka-writer_2.11)
 [![Stories in Ready](https://badge.waffle.io/BenFradet/spark-kafka-writer.png?label=ready&title=Ready)](https://waffle.io/BenFradet/spark-kafka-writer)
