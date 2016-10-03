@@ -1,3 +1,5 @@
+import com.typesafe.sbt.SbtGit.GitKeys._
+
 lazy val buildSettings = Seq(
   organization := "com.github.benfradet",
   version := "0.2.0-SNAPSHOT",
@@ -39,10 +41,8 @@ lazy val publishSettings = Seq(
   publishArtifact := true,
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
-    if (isSnapshot.value)
-      Some("snapshots" at nexus + "content/repositories/snapshots")
-    else
-      Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+    if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
+    else Some("releases"  at nexus + "service/local/staging/deploy/maven2")
   },
   publishArtifact in Test := false,
   pomIncludeRepository := { _ => false },
@@ -72,9 +72,15 @@ lazy val noPublishSettings = Seq(
 
 lazy val allSettings = baseSettings ++ buildSettings ++ publishSettings
 
+lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
+  site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "docs"),
+  git.remoteRepo := "git@github.com:BenFradet/spark-kafka-writer.git"
+)
+
 lazy val sparkKafkaWriter = (project in file("."))
   .settings(moduleName := "spark-kafka-writer")
   .settings(allSettings)
+    .settings(docSettings)
   .settings(noPublishSettings)
   .aggregate(v08, v010)
 
