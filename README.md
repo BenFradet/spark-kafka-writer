@@ -26,7 +26,7 @@ you're using Kafka 0.8 or 0.10 and your version of Spark:
 import java.util.Properties
 
 // replace by kafka08 if you're using Kafka 0.8
-import com.github.benfradet.spark.kafka010.writer.KafkaWriter._
+import com.github.benfradet.spark.kafka010.writer._
 import org.apache.kafka.common.serialization.StringSerializer
 
 val topic = "my-topic"
@@ -51,7 +51,7 @@ rdd.writeToKafka(
 import java.util.Properties
 
 // replace by kafka08 if you're using Kafka 0.8
-import com.github.benfradet.spark.kafka010.writer.KafkaWriter._
+import com.github.benfradet.spark.kafka010.writer._
 import org.apache.kafka.common.serialization.StringSerializer
 
 val topic = "my-topic"
@@ -69,6 +69,9 @@ dStream.writeToKafka(
   s => new ProducerRecord[String, String](topic, s)
 )
 ```
+
+You can find the full scaladoc at
+https://benfradet.github.io/spark-kafka-writer.
 
 ## Credit
 
