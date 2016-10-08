@@ -101,4 +101,3 @@ lazy val v010 = (project in file("spark-kafka-0-10-writer"))
   ).map(_ % "provided"))
 
 concurrentRestrictions in Global += Tags.limit(Tags.Test, 1)
-fork := true
