@@ -33,7 +33,8 @@ lazy val baseSettings = Seq(
   ).map(_ % sparkVersion % "provided") ++ Seq(
     "org.scalatest" %% "scalatest" % "2.2.6" % "test"
   ),
-  scalacOptions ++= compilerOptions
+  scalacOptions ++= compilerOptions,
+  parallelExecution in Test := false
 )
 
 lazy val publishSettings = Seq(
@@ -99,5 +100,3 @@ lazy val v010 = (project in file("spark-kafka-0-10-writer"))
     "org.apache.spark" %% "spark-streaming-kafka-0-10" % sparkVersion,
     "org.apache.kafka" %% "kafka" % kafka010Version
   ).map(_ % "provided"))
-
-concurrentRestrictions in Global += Tags.limit(Tags.Test, 1)
