@@ -37,7 +37,7 @@ private[writer] object KafkaProducerCache {
    * @return a [[KafkaProducer]] already in the cache
    */
   def getProducer[K, V](producerConfig: Properties): KafkaProducer[K, V] = {
-    producers.getOrElse(producerConfig, {
+    producers.getOrElseUpdate(producerConfig, {
       val producer = new KafkaProducer[K, V](producerConfig)
       producers(producerConfig) = producer
       producer
