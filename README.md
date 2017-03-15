@@ -72,13 +72,18 @@ dStream.writeToKafka(
 
 ### Callback
 
-It is also possible to assign a `Callback` that will be triggered after each write, this has a default value of None.
+It is also possible to assign a `Callback` from the Kafka Producer API that will be triggered after each write, this has a default value of None.
 The `Callback` must implement the `onComplete` method and the `Exception` parameter will be `null` if the write was successful. 
 Any `Callback` implementations will need to be serializable to be used in Spark.
 
 - If you want to use a `Callback` when saving an `RDD` to Kafka
 
 ```scala
+// replace by kafka08 if you're using Kafka 0.8
+import com.github.benfradet.spark.kafka010.writer._
+import org.apache.kafka.common.serialization.StringSerializer
+import org.apache.kafka.clients.producer.{Callback, ProducerRecord, RecordMetadata}
+
 val rdd: RDD[String] = ...
 rdd.writeToKafka(
   producerConfig,
@@ -94,6 +99,11 @@ rdd.writeToKafka(
 - If you want to use a `Callback` when saving a `DStream` to Kafka
 
 ```scala
+// replace by kafka08 if you're using Kafka 0.8
+import com.github.benfradet.spark.kafka010.writer._
+import org.apache.kafka.common.serialization.StringSerializer
+import org.apache.kafka.clients.producer.{Callback, ProducerRecord, RecordMetadata}
+
 val dStream: DStream[String] = ...
 dStream.writeToKafka(
   producerConfig,
