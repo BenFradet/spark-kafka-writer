@@ -50,6 +50,22 @@ import scala.reflect.ClassTag
  *   val dStream: DStream[String] = ...
  *   dStream.writeToKafka(
  *     producerConfig,
+ *     s => new ProducerRecord[String, String](topic, s)
+ *   )
+ *
+ *   val rdd: RDD[String] = ...
+ *   rdd.writeToKafka(
+ *     producerConfig,
+ *     s => new ProducerRecord[String, String](localTopic, s)
+ *   )
+ * }}}
+ * It is also possible to provide a callback for each write to Kafka.
+ * This is optional and has a value of None by default.
+ * Example Usage:
+ * {{{
+ *   val dStream: DStream[String] = ...
+ *   dStream.writeToKafka(
+ *     producerConfig,
  *     s => new ProducerRecord[String, String](topic, s),
  *     Some(new Callback with Serializable {
  *       override def onCompletion(metadata: RecordMetadata, e: Exception) = {

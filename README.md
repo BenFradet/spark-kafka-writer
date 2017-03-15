@@ -41,12 +41,7 @@ val producerConfig = {
 val rdd: RDD[String] = ...
 rdd.writeToKafka(
   producerConfig,
-  s => new ProducerRecord[String, String](topic, s),
-  Some(new Callback with Serializable {
-    override def onCompletion(metadata: RecordMetadata, e: Exception) = {
-      if(Option(e).isDefined) "write failed!" else "write succeeded!"
-    }
-  })
+  s => new ProducerRecord[String, String](topic, s)
 )
 ```
 
@@ -71,11 +66,42 @@ val producerConfig = {
 val dStream: DStream[String] = ...
 dStream.writeToKafka(
   producerConfig,
+  s => new ProducerRecord[String, String](topic, s)
+)
+```
+
+### Callback
+
+It is also possible to assign a `Callback` that will be triggered after each write, this has a default value of None.
+The `Callback` must implement the `onComplete` method and the `Exception` parameter will be `null` if the write was successful. 
+Any `Callback` implementations will need to be serializable to be used in Spark.
+
+- If you want to use a `Callback` when saving an `RDD` to Kafka
+
+```scala
+val rdd: RDD[String] = ...
+rdd.writeToKafka(
+  producerConfig,
   s => new ProducerRecord[String, String](topic, s),
   Some(new Callback with Serializable {
     override def onCompletion(metadata: RecordMetadata, e: Exception) = {
       if(Option(e).isDefined) "write failed!" else "write succeeded!"
     }
+  })
+)
+```
+
+- If you want to use a `Callback` when saving a `DStream` to Kafka
+
+```scala
+val dStream: DStream[String] = ...
+dStream.writeToKafka(
+  producerConfig,
+  s => new ProducerRecord[String, String](topic, s),
+  Some(new Callback with Serializable {
+      override def onCompletion(metadata: RecordMetadata, e: Exception) = {
+        if(Option(e).isDefined) "write failed!" else "write succeeded!"
+      }
   })
 )
 ```
