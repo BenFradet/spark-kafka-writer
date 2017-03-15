@@ -38,11 +38,12 @@ class RDDKafkaWriter[T: ClassTag](@transient private val rdd: RDD[T])
    * Write a [[RDD]] to Kafka
    * @param producerConfig properties for a [[org.apache.kafka.clients.producer.KafkaProducer]]
    * @param transformFunc a function used to transform values of T type into [[ProducerRecord]]s
+   * @param callback an optional [[Callback]] to be called after each write, default value is None.
    */
   override def writeToKafka[K, V](
     producerConfig: Properties,
     transformFunc: T => ProducerRecord[K, V],
-    callback: Option[Callback]
+    callback: Option[Callback] = None
   ): Unit =
     rdd.foreachPartition { partition =>
       val producer = KafkaProducerCache.getProducer[K, V](producerConfig)

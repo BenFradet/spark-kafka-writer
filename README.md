@@ -41,7 +41,12 @@ val producerConfig = {
 val rdd: RDD[String] = ...
 rdd.writeToKafka(
   producerConfig,
-  s => new ProducerRecord[String, String](topic, s)
+  s => new ProducerRecord[String, String](topic, s),
+  Some(new Callback with Serializable {
+    override def onCompletion(metadata: RecordMetadata, e: Exception) = {
+      if(Option(e).isDefined) "write failed!" else "write succeeded!"
+    }
+  })
 )
 ```
 
@@ -66,7 +71,12 @@ val producerConfig = {
 val dStream: DStream[String] = ...
 dStream.writeToKafka(
   producerConfig,
-  s => new ProducerRecord[String, String](topic, s)
+  s => new ProducerRecord[String, String](topic, s),
+  Some(new Callback with Serializable {
+    override def onCompletion(metadata: RecordMetadata, e: Exception) = {
+      if(Option(e).isDefined) "write failed!" else "write succeeded!"
+    }
+  })
 )
 ```
 

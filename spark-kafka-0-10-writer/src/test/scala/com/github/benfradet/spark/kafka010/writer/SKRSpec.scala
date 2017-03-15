@@ -51,6 +51,7 @@ trait SKRSpec
     ktu.setup()
   }
   override def afterAll(): Unit = {
+    SKRSpec.callbackTriggerCount.set(0)
     if (ktu != null) {
       ktu.tearDown()
       ktu = null
@@ -60,7 +61,6 @@ trait SKRSpec
   var topic: String = _
   var ssc: StreamingContext = _
   override def afterEach(): Unit = {
-    SKRSpec.callbackTriggerCount.set(0)
     if (ssc != null) {
       ssc.stop()
       ssc = null

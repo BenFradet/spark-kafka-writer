@@ -61,7 +61,7 @@ class RDDKafkaWriterSpec extends SKRSpec {
         )
 
         eventually(timeout(30.seconds), interval(1.second)) {
-          SKRSpec.callbackTriggerCount.get() shouldBe 10
+          SKRSpec.callbackTriggerCount.get() shouldBe msgs.size
         }
       }
     }

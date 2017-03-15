@@ -50,13 +50,23 @@ import scala.reflect.ClassTag
  *   val dStream: DStream[String] = ...
  *   dStream.writeToKafka(
  *     producerConfig,
- *     s => new ProducerRecord[String, String](topic, s)
+ *     s => new ProducerRecord[String, String](topic, s),
+ *     Some(new Callback with Serializable {
+ *       override def onCompletion(metadata: RecordMetadata, e: Exception) = {
+ *         if(Option(e).isDefined) "write failed!" else "write succeeded!"
+ *       }
+ *     })
  *   )
  *
  *   val rdd: RDD[String] = ...
  *   rdd.writeToKafka(
  *     producerConfig,
- *     s => new ProducerRecord[String, String](localTopic, s)
+ *     s => new ProducerRecord[String, String](localTopic, s),
+ *     Some(new Callback with Serializable {
+ *       override def onCompletion(metadata: RecordMetadata, e: Exception) = {
+ *         if(Option(e).isDefined) "write failed!" else "write succeeded!"
+ *       }
+ *     })
  *   )
  * }}}
  */
@@ -65,6 +75,7 @@ abstract class KafkaWriter[T: ClassTag] extends Serializable {
    * Write a [[DStream]] or [[RDD]] to Kafka
    * @param producerConfig properties for a [[org.apache.kafka.clients.producer.KafkaProducer]]
    * @param transformFunc a function used to transform values of T type into [[ProducerRecord]]s
+   * @param callback an optional [[Callback]] to be called after each write, default value is None.
    */
   def writeToKafka[K, V](
     producerConfig: Properties,
