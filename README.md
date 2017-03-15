@@ -73,6 +73,10 @@ dStream.writeToKafka(
 You can find the full scaladoc at
 https://benfradet.github.io/spark-kafka-writer.
 
+## Adopters
+
+- _Submit a pull-request to include your company/project into the list_
+
 ## Credit
 
 The original code was written by [Hari Shreedharan](https://github.com/harishreedharan).
