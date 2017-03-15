@@ -22,10 +22,11 @@
 package com.github.benfradet.spark.kafka010.writer
 
 import java.util.Properties
+import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializer}
 import org.apache.spark.SparkConf
-import org.apache.spark.streaming.kafka010.{ConsumerStrategies, LocationStrategies, KafkaUtils}
+import org.apache.spark.streaming.kafka010.{ConsumerStrategies, KafkaUtils, LocationStrategies}
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.scalatest.concurrent.Eventually
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Matchers, WordSpec}
@@ -59,6 +60,7 @@ trait SKRSpec
   var topic: String = _
   var ssc: StreamingContext = _
   override def afterEach(): Unit = {
+    SKRSpec.callbackTriggerCount.set(0)
     if (ssc != null) {
       ssc.stop()
       ssc = null
@@ -98,4 +100,8 @@ trait SKRSpec
     p.setProperty("value.serializer", classOf[StringSerializer].getName)
     p
   }
+}
+
+object SKRSpec {
+  val callbackTriggerCount = new AtomicInteger()
 }

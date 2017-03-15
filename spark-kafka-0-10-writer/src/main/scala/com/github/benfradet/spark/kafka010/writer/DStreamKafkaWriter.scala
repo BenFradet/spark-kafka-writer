@@ -23,7 +23,7 @@ package com.github.benfradet.spark.kafka010.writer
 
 import java.util.Properties
 
-import org.apache.kafka.clients.producer.ProducerRecord
+import org.apache.kafka.clients.producer.{Callback, ProducerRecord}
 import org.apache.spark.streaming.dstream.DStream
 
 import scala.reflect.ClassTag
@@ -41,10 +41,11 @@ class DStreamKafkaWriter[T: ClassTag](@transient private val dStream: DStream[T]
    */
   override def writeToKafka[K, V](
     producerConfig: Properties,
-    transformFunc: T => ProducerRecord[K, V]
+    transformFunc: T => ProducerRecord[K, V],
+    callback: Option[Callback]
   ): Unit =
     dStream.foreachRDD { rdd =>
       val rddWriter = new RDDKafkaWriter[T](rdd)
-      rddWriter.writeToKafka(producerConfig, transformFunc)
+      rddWriter.writeToKafka(producerConfig, transformFunc, callback)
     }
 }

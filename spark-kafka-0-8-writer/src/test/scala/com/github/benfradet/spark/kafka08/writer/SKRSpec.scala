@@ -22,6 +22,7 @@
 package com.github.benfradet.spark.kafka08.writer
 
 import java.util.Properties
+import java.util.concurrent.atomic.AtomicInteger
 
 import kafka.serializer.StringDecoder
 import org.apache.kafka.common.serialization.StringSerializer
@@ -60,6 +61,7 @@ trait SKRSpec
   var topic: String = _
   var ssc: StreamingContext = _
   override def afterEach(): Unit = {
+    SKRSpec.callbackTriggerCount.set(0)
     if (ssc != null) {
       ssc.stop()
       ssc = null
@@ -95,4 +97,8 @@ trait SKRSpec
     p.setProperty("value.serializer", classOf[StringSerializer].getName)
     p
   }
+}
+
+object SKRSpec {
+  val callbackTriggerCount = new AtomicInteger()
 }

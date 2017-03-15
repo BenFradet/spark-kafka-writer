@@ -21,7 +21,7 @@
 
 package com.github.benfradet.spark.kafka010.writer
 
-import org.apache.kafka.clients.producer.ProducerRecord
+import org.apache.kafka.clients.producer._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.dstream.DStream
 
@@ -46,6 +46,26 @@ class DStreamKafkaWriterSpec extends SKRSpec {
         ssc.start()
         eventually(timeout(30.seconds), interval(1.second)) {
           results shouldBe msgs
+        }
+      }
+
+      "trigger a given callback for every write to Kafka" in {
+        val localTopic = topic
+        val msgs = (1 to 10).map(_.toString)
+        val stream = createDStream(msgs)
+        stream.writeToKafka(
+          producerConfig,
+          s => new ProducerRecord[String, String](localTopic, s),
+          Some(new Callback with Serializable {
+            override def onCompletion(metadata: RecordMetadata, exception: Exception): Unit = {
+              SKRSpec.callbackTriggerCount.incrementAndGet()
+            }
+          })
+        )
+
+        ssc.start()
+        eventually(timeout(30.seconds), interval(1.second)) {
+          SKRSpec.callbackTriggerCount.get() shouldBe 10
         }
       }
     }

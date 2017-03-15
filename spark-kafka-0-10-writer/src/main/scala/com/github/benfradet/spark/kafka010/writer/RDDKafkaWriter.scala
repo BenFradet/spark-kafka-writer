@@ -23,7 +23,7 @@ package com.github.benfradet.spark.kafka010.writer
 
 import java.util.Properties
 
-import org.apache.kafka.clients.producer.ProducerRecord
+import org.apache.kafka.clients.producer.{Callback, ProducerRecord}
 import org.apache.spark.rdd.RDD
 
 import scala.reflect.ClassTag
@@ -41,12 +41,13 @@ class RDDKafkaWriter[T: ClassTag](@transient private val rdd: RDD[T])
    */
   override def writeToKafka[K, V](
     producerConfig: Properties,
-    transformFunc: T => ProducerRecord[K, V]
+    transformFunc: T => ProducerRecord[K, V],
+    callback: Option[Callback]
   ): Unit =
     rdd.foreachPartition { partition =>
       val producer = KafkaProducerCache.getProducer[K, V](producerConfig)
       partition
         .map(transformFunc)
-        .foreach(record => producer.send(record))
+        .foreach(record => producer.send(record, callback.orNull))
     }
 }

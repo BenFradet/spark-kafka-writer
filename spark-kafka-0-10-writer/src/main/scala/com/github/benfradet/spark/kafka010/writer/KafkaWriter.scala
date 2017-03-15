@@ -23,7 +23,7 @@ package com.github.benfradet.spark.kafka010.writer
 
 import java.util.Properties
 
-import org.apache.kafka.clients.producer.ProducerRecord
+import org.apache.kafka.clients.producer.{Callback, ProducerRecord}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.dstream.DStream
 
@@ -68,6 +68,7 @@ abstract class KafkaWriter[T: ClassTag] extends Serializable {
    */
   def writeToKafka[K, V](
     producerConfig: Properties,
-    transformFunc: T => ProducerRecord[K, V]
+    transformFunc: T => ProducerRecord[K, V],
+    callback: Option[Callback] = None
   ): Unit
 }

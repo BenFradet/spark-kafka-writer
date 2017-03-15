@@ -21,7 +21,7 @@
 
 package com.github.benfradet.spark.kafka010.writer
 
-import org.apache.kafka.clients.producer.ProducerRecord
+import org.apache.kafka.clients.producer._
 
 import scala.concurrent.duration._
 
@@ -43,6 +43,25 @@ class RDDKafkaWriterSpec extends SKRSpec {
         ssc.start()
         eventually(timeout(30.seconds), interval(1.second)) {
           results shouldBe msgs
+        }
+      }
+
+      "trigger a given callback for every write to Kafka" in {
+        val localTopic = topic
+        val msgs = (1 to 10).map(_.toString)
+        val rdd = ssc.sparkContext.parallelize(msgs)
+        rdd.writeToKafka(
+          producerConfig,
+          s => new ProducerRecord[String, String](localTopic, s),
+          Some(new Callback with Serializable {
+            override def onCompletion(metadata: RecordMetadata, exception: Exception): Unit = {
+              SKRSpec.callbackTriggerCount.incrementAndGet()
+            }
+          })
+        )
+
+        eventually(timeout(30.seconds), interval(1.second)) {
+          SKRSpec.callbackTriggerCount.get() shouldBe 10
         }
       }
     }
