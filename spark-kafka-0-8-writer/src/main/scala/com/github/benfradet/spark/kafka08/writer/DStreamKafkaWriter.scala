@@ -23,7 +23,7 @@ package com.github.benfradet.spark.kafka08.writer
 
 import java.util.Properties
 
-import org.apache.kafka.clients.producer.ProducerRecord
+import org.apache.kafka.clients.producer.{Callback, ProducerRecord}
 import org.apache.spark.streaming.dstream.DStream
 
 import scala.reflect.ClassTag
@@ -38,13 +38,15 @@ class DStreamKafkaWriter[T: ClassTag](@transient private val dStream: DStream[T]
    * Write a [[DStream]] to Kafka
    * @param producerConfig properties for a [[org.apache.kafka.clients.producer.KafkaProducer]]
    * @param transformFunc a function used to transform values of T type into [[ProducerRecord]]s
+   * @param callback an optional [[Callback]] to be called after each write, default value is None.
    */
   override def writeToKafka[K, V](
     producerConfig: Properties,
-    transformFunc: T => ProducerRecord[K, V]
+    transformFunc: T => ProducerRecord[K, V],
+    callback: Option[Callback] = None
   ): Unit =
     dStream.foreachRDD { rdd =>
       val rddWriter = new RDDKafkaWriter[T](rdd)
-      rddWriter.writeToKafka(producerConfig, transformFunc)
+      rddWriter.writeToKafka(producerConfig, transformFunc, callback)
     }
 }
