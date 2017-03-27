@@ -17,6 +17,7 @@ you're using Kafka 0.8 or 0.10 and your version of Spark:
 |:-:|:-:|:-:|
 | **Spark 1.6.X** | `"com.github.benfradet" %% "spark-kafka-writer" % "0.1.0"` | :x: |
 | **Spark 2.0.X** | `"com.github.benfradet" %% "spark-kafka-0-8-writer" % "0.2.0"` | `"com.github.benfradet" %% "spark-kafka-0-10-writer" % "0.2.0"` |
+| **Spark 2.1.X** | `"com.github.benfradet" %% "spark-kafka-0-8-writer" % "0.3.0"` | `"com.github.benfradet" %% "spark-kafka-0-10-writer" % "0.3.0"` |
 
 ## Usage
 
@@ -72,8 +73,12 @@ dStream.writeToKafka(
 
 ### Callback
 
-It is also possible to assign a `Callback` from the Kafka Producer API that will be triggered after each write, this has a default value of None.
-The `Callback` must implement the `onComplete` method and the `Exception` parameter will be `null` if the write was successful. 
+It is also possible to assign a `Callback` from the Kafka Producer API that will
+be triggered after each write, this has a default value of None.
+
+The `Callback` must implement the `onComplete` method and the `Exception`
+parameter will be `null` if the write was successful. 
+
 Any `Callback` implementations will need to be serializable to be used in Spark.
 
 - If you want to use a `Callback` when saving an `RDD` to Kafka
