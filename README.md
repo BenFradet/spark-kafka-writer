@@ -21,6 +21,8 @@ you're using Kafka 0.8 or 0.10 and your version of Spark:
 
 ## Usage
 
+### Without callbacks
+
 - if you want to save an `RDD` to Kafka
 
 ```scala
@@ -71,55 +73,70 @@ dStream.writeToKafka(
 )
 ```
 
-### Callback
+### With callbacks
 
 It is also possible to assign a `Callback` from the Kafka Producer API that will
 be triggered after each write, this has a default value of None.
 
-The `Callback` must implement the `onComplete` method and the `Exception`
+The `Callback` must implement the `onCompletion` method and the `Exception`
 parameter will be `null` if the write was successful. 
 
 Any `Callback` implementations will need to be serializable to be used in Spark.
 
-- If you want to use a `Callback` when saving an `RDD` to Kafka
+- if you want to use a `Callback` when saving an `RDD` to Kafka
 
 ```scala
 // replace by kafka08 if you're using Kafka 0.8
 import com.github.benfradet.spark.kafka010.writer._
-import org.apache.kafka.common.serialization.StringSerializer
 import org.apache.kafka.clients.producer.{Callback, ProducerRecord, RecordMetadata}
+
+@transient lazy val log = org.apache.log4j.Logger.getLogger("spark-kafka-writer")
 
 val rdd: RDD[String] = ...
 rdd.writeToKafka(
   producerConfig,
   s => new ProducerRecord[String, String](topic, s),
   Some(new Callback with Serializable {
-    override def onCompletion(metadata: RecordMetadata, e: Exception) = {
-      if(Option(e).isDefined) "write failed!" else "write succeeded!"
+    override def onCompletion(metadata: RecordMetadata, e: Exception): Unit = {
+      if(Option(e).isDefined) {
+        log.warn("error sending message", e)
+      } else {
+        log.info(s"write succeeded! offset: ${metadata.offset()}")
+      }
     }
   })
 )
 ```
 
-- If you want to use a `Callback` when saving a `DStream` to Kafka
+- if you want to use a `Callback` when saving a `DStream` to Kafka
 
 ```scala
 // replace by kafka08 if you're using Kafka 0.8
 import com.github.benfradet.spark.kafka010.writer._
-import org.apache.kafka.common.serialization.StringSerializer
 import org.apache.kafka.clients.producer.{Callback, ProducerRecord, RecordMetadata}
+
+@transient lazy val log = org.apache.log4j.Logger.getLogger("spark-kafka-writer")
 
 val dStream: DStream[String] = ...
 dStream.writeToKafka(
   producerConfig,
   s => new ProducerRecord[String, String](topic, s),
   Some(new Callback with Serializable {
-      override def onCompletion(metadata: RecordMetadata, e: Exception) = {
-        if(Option(e).isDefined) "write failed!" else "write succeeded!"
+    override def onCompletion(metadata: RecordMetadata, e: Exception): Unit = {
+      if(Option(e).isDefined) {
+        log.warn("error sending message", e)
+      } else {
+        log.info(s"write succeeded! offset: ${metadata.offset()}")
       }
+    }
   })
 )
 ```
+
+Check out [the Kafka documentation](http://kafka.apache.org/0102/javadoc/org/apache/kafka/clients/producer/KafkaProducer.html#send(org.apache.kafka.clients.producer.ProducerRecord,%20org.apache.kafka.clients.producer.Callback))
+to know more about callbacks.
+
+## Scaladoc
 
 You can find the full scaladoc at
 https://benfradet.github.io/spark-kafka-writer.
