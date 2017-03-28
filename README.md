@@ -26,15 +26,13 @@ you're using Kafka 0.8 or 0.10 and your version of Spark:
 - if you want to save an `RDD` to Kafka
 
 ```scala
-import java.util.Properties
-
 // replace by kafka08 if you're using Kafka 0.8
 import com.github.benfradet.spark.kafka010.writer._
 import org.apache.kafka.common.serialization.StringSerializer
 
 val topic = "my-topic"
 val producerConfig = {
-  val p = new Properties()
+  val p = new java.util.Properties()
   p.setProperty("bootstrap.servers", "127.0.0.1:9092")
   p.setProperty("key.serializer", classOf[StringSerializer].getName)
   p.setProperty("value.serializer", classOf[StringSerializer].getName)
@@ -51,15 +49,13 @@ rdd.writeToKafka(
 - if you want to save a `DStream` to Kafka
 
 ```scala
-import java.util.Properties
-
 // replace by kafka08 if you're using Kafka 0.8
 import com.github.benfradet.spark.kafka010.writer._
 import org.apache.kafka.common.serialization.StringSerializer
 
 val topic = "my-topic"
 val producerConfig = {
-  val p = new Properties()
+  val p = new java.util.Properties()
   p.setProperty("bootstrap.servers", "127.0.0.1:9092")
   p.setProperty("key.serializer", classOf[StringSerializer].getName)
   p.setProperty("value.serializer", classOf[StringSerializer].getName)
@@ -92,13 +88,16 @@ import org.apache.kafka.clients.producer.{Callback, ProducerRecord, RecordMetada
 
 @transient lazy val log = org.apache.log4j.Logger.getLogger("spark-kafka-writer")
 
+val topic = "my-topic"
+val producerConfig: java.util.Properties = ...
+
 val rdd: RDD[String] = ...
 rdd.writeToKafka(
   producerConfig,
   s => new ProducerRecord[String, String](topic, s),
   Some(new Callback with Serializable {
     override def onCompletion(metadata: RecordMetadata, e: Exception): Unit = {
-      if(Option(e).isDefined) {
+      if (Option(e).isDefined) {
         log.warn("error sending message", e)
       } else {
         log.info(s"write succeeded! offset: ${metadata.offset()}")
@@ -117,13 +116,16 @@ import org.apache.kafka.clients.producer.{Callback, ProducerRecord, RecordMetada
 
 @transient lazy val log = org.apache.log4j.Logger.getLogger("spark-kafka-writer")
 
+val topic = "my-topic"
+val producerConfig: java.util.Properties = ...
+
 val dStream: DStream[String] = ...
 dStream.writeToKafka(
   producerConfig,
   s => new ProducerRecord[String, String](topic, s),
   Some(new Callback with Serializable {
     override def onCompletion(metadata: RecordMetadata, e: Exception): Unit = {
-      if(Option(e).isDefined) {
+      if (Option(e).isDefined) {
         log.warn("error sending message", e)
       } else {
         log.info(s"write succeeded! offset: ${metadata.offset()}")
