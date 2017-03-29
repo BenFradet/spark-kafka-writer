@@ -73,15 +73,17 @@ lazy val noPublishSettings = Seq(
 
 lazy val allSettings = baseSettings ++ buildSettings ++ publishSettings
 
-lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
-  site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "docs"),
-  git.remoteRepo := "git@github.com:BenFradet/spark-kafka-writer.git"
+lazy val docSettings = Seq(
+  siteSubdirName in ScalaUnidoc := "",
+  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc),
+  gitRemoteRepo := "https://github.com/BenFradet/spark-kafka-writer.git"
 )
 
 lazy val sparkKafkaWriter = (project in file("."))
   .settings(moduleName := "spark-kafka-writer")
   .settings(allSettings)
-    .settings(docSettings)
+  .enablePlugins(ScalaUnidocPlugin, GhpagesPlugin)
+  .settings(docSettings)
   .settings(noPublishSettings)
   .aggregate(v08, v010)
 
