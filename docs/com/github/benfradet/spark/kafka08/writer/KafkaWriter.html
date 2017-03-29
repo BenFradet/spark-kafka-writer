@@ -74,6 +74,28 @@ dStream.writeToKafka(
 rdd.writeToKafka(
   producerConfig,
   s <span class="kw">=&gt;</span> <span class="kw">new</span> ProducerRecord[<span class="std">String</span>, <span class="std">String</span>](localTopic, s)
+)</pre><p>It is also possible to provide a callback for each write to Kafka.
+This is optional and has a value of None by default.
+Example Usage:</p><pre><span class="kw">val</span> dStream: DStream[<span class="std">String</span>] = ...
+dStream.writeToKafka(
+  producerConfig,
+  s <span class="kw">=&gt;</span> <span class="kw">new</span> ProducerRecord[<span class="std">String</span>, <span class="std">String</span>](topic, s),
+  <span class="std">Some</span>(<span class="kw">new</span> Callback <span class="kw">with</span> Serializable {
+    <span class="kw">override</span> <span class="kw">def</span> onCompletion(metadata: RecordMetadata, e: Exception) = {
+      <span class="kw">if</span>(<span class="std">Option</span>(e).isDefined) <span class="lit">"write failed!"</span> <span class="kw">else</span> <span class="lit">"write succeeded!"</span>
+    }
+  })
+)
+
+<span class="kw">val</span> rdd: RDD[<span class="std">String</span>] = ...
+rdd.writeToKafka(
+  producerConfig,
+  s <span class="kw">=&gt;</span> <span class="kw">new</span> ProducerRecord[<span class="std">String</span>, <span class="std">String</span>](localTopic, s),
+  <span class="std">Some</span>(<span class="kw">new</span> Callback <span class="kw">with</span> Serializable {
+    <span class="kw">override</span> <span class="kw">def</span> onCompletion(metadata: RecordMetadata, e: Exception) = {
+      <span class="kw">if</span>(<span class="std">Option</span>(e).isDefined) <span class="lit">"write failed!"</span> <span class="kw">else</span> <span class="lit">"write succeeded!"</span>
+    }
+  })
 )</pre></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
@@ -141,22 +163,22 @@ rdd.writeToKafka(
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
               <ol><li name="com.github.benfradet.spark.kafka08.writer.KafkaWriter#writeToKafka" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="writeToKafka[K,V](producerConfig:java.util.Properties,transformFunc:T=&gt;org.apache.kafka.clients.producer.ProducerRecord[K,V]):Unit"></a>
-      <a id="writeToKafka[K,V](Properties,(T)⇒ProducerRecord[K,V]):Unit"></a>
+      <a id="writeToKafka[K,V](producerConfig:java.util.Properties,transformFunc:T=&gt;org.apache.kafka.clients.producer.ProducerRecord[K,V],callback:Option[org.apache.kafka.clients.producer.Callback]):Unit"></a>
+      <a id="writeToKafka[K,V](Properties,(T)⇒ProducerRecord[K,V],Option[Callback]):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">writeToKafka</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="producerConfig">producerConfig: <span class="extype" name="java.util.Properties">Properties</span></span>, <span name="transformFunc">transformFunc: (<span class="extype" name="com.github.benfradet.spark.kafka08.writer.KafkaWriter.T">T</span>) ⇒ <span class="extype" name="org.apache.kafka.clients.producer.ProducerRecord">ProducerRecord</span>[<span class="extype" name="com.github.benfradet.spark.kafka08.writer.KafkaWriter.writeToKafka.K">K</span>, <span class="extype" name="com.github.benfradet.spark.kafka08.writer.KafkaWriter.writeToKafka.V">V</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">writeToKafka</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="producerConfig">producerConfig: <span class="extype" name="java.util.Properties">Properties</span></span>, <span name="transformFunc">transformFunc: (<span class="extype" name="com.github.benfradet.spark.kafka08.writer.KafkaWriter.T">T</span>) ⇒ <span class="extype" name="org.apache.kafka.clients.producer.ProducerRecord">ProducerRecord</span>[<span class="extype" name="com.github.benfradet.spark.kafka08.writer.KafkaWriter.writeToKafka.K">K</span>, <span class="extype" name="com.github.benfradet.spark.kafka08.writer.KafkaWriter.writeToKafka.V">V</span>]</span>, <span name="callback">callback: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.apache.kafka.clients.producer.Callback">Callback</span>] = <span class="symbol">None</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.github.benfradet.spark.kafka08.writer.KafkaWriter@writeToKafka[K,V](producerConfig:java.util.Properties,transformFunc:T=&gt;org.apache.kafka.clients.producer.ProducerRecord[K,V]):Unit" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.github.benfradet.spark.kafka08.writer.KafkaWriter@writeToKafka[K,V](producerConfig:java.util.Properties,transformFunc:T=&gt;org.apache.kafka.clients.producer.ProducerRecord[K,V],callback:Option[org.apache.kafka.clients.producer.Callback]):Unit" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Write a <span class="extype" name="DStream">DStream</span> or <span class="extype" name="RDD">RDD</span> to Kafka</p><div class="fullcomment"><div class="comment cmt"><p>Write a <span class="extype" name="DStream">DStream</span> or <span class="extype" name="RDD">RDD</span> to Kafka</p></div><dl class="paramcmts block"><dt class="param">producerConfig</dt><dd class="cmt"><p>properties for a <span class="extype" name="org.apache.kafka.clients.producer.KafkaProducer">org.apache.kafka.clients.producer.KafkaProducer</span></p></dd><dt class="param">transformFunc</dt><dd class="cmt"><p>a function used to transform values of T type into <span class="extype" name="ProducerRecord">ProducerRecord</span>s</p></dd></dl></div>
+      <p class="shortcomment cmt">Write a <span class="extype" name="DStream">DStream</span> or <span class="extype" name="RDD">RDD</span> to Kafka</p><div class="fullcomment"><div class="comment cmt"><p>Write a <span class="extype" name="DStream">DStream</span> or <span class="extype" name="RDD">RDD</span> to Kafka</p></div><dl class="paramcmts block"><dt class="param">producerConfig</dt><dd class="cmt"><p>properties for a <span class="extype" name="org.apache.kafka.clients.producer.KafkaProducer">org.apache.kafka.clients.producer.KafkaProducer</span></p></dd><dt class="param">transformFunc</dt><dd class="cmt"><p>a function used to transform values of T type into <span class="extype" name="ProducerRecord">ProducerRecord</span>s</p></dd><dt class="param">callback</dt><dd class="cmt"><p>an optional <span class="extype" name="Callback">Callback</span> to be called after each write, default value is None.</p></dd></dl></div>
     </li></ol>
             </div>
 

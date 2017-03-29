@@ -151,6 +151,28 @@ dStream.writeToKafka(
 rdd.writeToKafka(
   producerConfig,
   s <span class="kw">=&gt;</span> <span class="kw">new</span> ProducerRecord[<span class="std">String</span>, <span class="std">String</span>](localTopic, s)
+)</pre><p>It is also possible to provide a callback for each write to Kafka.
+This is optional and has a value of None by default.
+Example Usage:</p><pre><span class="kw">val</span> dStream: DStream[<span class="std">String</span>] = ...
+dStream.writeToKafka(
+  producerConfig,
+  s <span class="kw">=&gt;</span> <span class="kw">new</span> ProducerRecord[<span class="std">String</span>, <span class="std">String</span>](topic, s),
+  <span class="std">Some</span>(<span class="kw">new</span> Callback <span class="kw">with</span> Serializable {
+    <span class="kw">override</span> <span class="kw">def</span> onCompletion(metadata: RecordMetadata, e: Exception) = {
+      <span class="kw">if</span>(<span class="std">Option</span>(e).isDefined) <span class="lit">"write failed!"</span> <span class="kw">else</span> <span class="lit">"write succeeded!"</span>
+    }
+  })
+)
+
+<span class="kw">val</span> rdd: RDD[<span class="std">String</span>] = ...
+rdd.writeToKafka(
+  producerConfig,
+  s <span class="kw">=&gt;</span> <span class="kw">new</span> ProducerRecord[<span class="std">String</span>, <span class="std">String</span>](localTopic, s),
+  <span class="std">Some</span>(<span class="kw">new</span> Callback <span class="kw">with</span> Serializable {
+    <span class="kw">override</span> <span class="kw">def</span> onCompletion(metadata: RecordMetadata, e: Exception) = {
+      <span class="kw">if</span>(<span class="std">Option</span>(e).isDefined) <span class="lit">"write failed!"</span> <span class="kw">else</span> <span class="lit">"write succeeded!"</span>
+    }
+  })
 )</pre></div></div>
     </li><li name="com.github.benfradet.spark.kafka08.writer.RDDKafkaWriter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="RDDKafkaWriter[T]extendsKafkaWriter[T]withSerializable"></a>
