@@ -47,11 +47,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Implicit conversions between
-<span class="extype" name="DStream">DStream</span> -&gt; <a href="KafkaWriter.html" class="extype" name="com.github.benfradet.spark.kafka010.writer.KafkaWriter">com.github.benfradet.spark.kafka010.writer.KafkaWriter</a>
-and
-<span class="extype" name="RDD">RDD</span> -&gt; <a href="KafkaWriter.html" class="extype" name="com.github.benfradet.spark.kafka010.writer.KafkaWriter">com.github.benfradet.spark.kafka010.writer.KafkaWriter</a>
-</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Implicit conversions between <span class="extype" name="DStream">DStream</span> -&gt; <a href="KafkaWriter.html" class="extype" name="com.github.benfradet.spark.kafka010.writer.KafkaWriter">KafkaWriter</a> and <span class="extype" name="RDD">RDD</span> -&gt; <a href="KafkaWriter.html" class="extype" name="com.github.benfradet.spark.kafka010.writer.KafkaWriter">KafkaWriter</a></p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -125,16 +121,12 @@ and
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Class used to write <span class="extype" name="DStream">DStream</span>s and <span class="extype" name="RDD">RDD</span>s to Kafka
-Example usage:</p><div class="fullcomment"><div class="comment cmt"><p>Class used to write <span class="extype" name="DStream">DStream</span>s and <span class="extype" name="RDD">RDD</span>s to Kafka
-Example usage:</p><pre><span class="kw">import</span> java.util.Properties
-
-<span class="kw">import</span> com.github.benfradet.spark.kafka010.writer.KafkaWriter._
+      <p class="shortcomment cmt">Class used to write DStreams and RDDs to Kafka</p><div class="fullcomment"><div class="comment cmt"><p>Class used to write DStreams and RDDs to Kafka</p><p>Example usage:</p><pre><span class="kw">import</span> com.github.benfradet.spark.kafka010.writer.KafkaWriter._
 <span class="kw">import</span> org.apache.kafka.common.serialization.StringSerializer
 
 <span class="kw">val</span> topic = <span class="lit">"my-topic"</span>
 <span class="kw">val</span> producerConfig = {
-  <span class="kw">val</span> p = <span class="kw">new</span> Properties()
+  <span class="kw">val</span> p = <span class="kw">new</span> java.util.Properties()
   p.setProperty(<span class="lit">"bootstrap.servers"</span>, <span class="lit">"127.0.0.1:9092"</span>)
   p.setProperty(<span class="lit">"key.serializer"</span>, classOf[StringSerializer].getName)
   p.setProperty(<span class="lit">"value.serializer"</span>, classOf[StringSerializer].getName)
@@ -151,15 +143,19 @@ dStream.writeToKafka(
 rdd.writeToKafka(
   producerConfig,
   s <span class="kw">=&gt;</span> <span class="kw">new</span> ProducerRecord[<span class="std">String</span>, <span class="std">String</span>](localTopic, s)
-)</pre><p>It is also possible to provide a callback for each write to Kafka.
-This is optional and has a value of None by default.
-Example Usage:</p><pre><span class="kw">val</span> dStream: DStream[<span class="std">String</span>] = ...
+)</pre><p>It is also possible to provide a callback for each write to Kafka.</p><p>This is optional and has a value of None by default.</p><p>Example Usage:</p><pre><span class="ano">@transient</span> <span class="kw">val</span> log = org.apache.log4j.Logger.getLogger(<span class="lit">"spark-kafka-writer"</span>)
+
+<span class="kw">val</span> dStream: DStream[<span class="std">String</span>] = ...
 dStream.writeToKafka(
   producerConfig,
   s <span class="kw">=&gt;</span> <span class="kw">new</span> ProducerRecord[<span class="std">String</span>, <span class="std">String</span>](topic, s),
   <span class="std">Some</span>(<span class="kw">new</span> Callback <span class="kw">with</span> Serializable {
-    <span class="kw">override</span> <span class="kw">def</span> onCompletion(metadata: RecordMetadata, e: Exception) = {
-      <span class="kw">if</span>(<span class="std">Option</span>(e).isDefined) <span class="lit">"write failed!"</span> <span class="kw">else</span> <span class="lit">"write succeeded!"</span>
+    <span class="kw">override</span> <span class="kw">def</span> onCompletion(metadata: RecordMetadata, e: Exception): <span class="std">Unit</span> = {
+      <span class="kw">if</span> (<span class="std">Option</span>(e).isDefined) {
+        log.warn(<span class="lit">"error sending message"</span>, e)
+      } <span class="kw">else</span> {
+        log.info(s<span class="lit">"write succeeded, offset: ${rmetadata.offset()"</span>)
+      }
     }
   })
 )
@@ -169,8 +165,12 @@ rdd.writeToKafka(
   producerConfig,
   s <span class="kw">=&gt;</span> <span class="kw">new</span> ProducerRecord[<span class="std">String</span>, <span class="std">String</span>](localTopic, s),
   <span class="std">Some</span>(<span class="kw">new</span> Callback <span class="kw">with</span> Serializable {
-    <span class="kw">override</span> <span class="kw">def</span> onCompletion(metadata: RecordMetadata, e: Exception) = {
-      <span class="kw">if</span>(<span class="std">Option</span>(e).isDefined) <span class="lit">"write failed!"</span> <span class="kw">else</span> <span class="lit">"write succeeded!"</span>
+    <span class="kw">override</span> <span class="kw">def</span> onCompletion(metadata: RecordMetadata, e: Exception): <span class="std">Unit</span> = {
+      <span class="kw">if</span> (<span class="std">Option</span>(e).isDefined) {
+        log.warn(<span class="lit">"error sending message"</span>, e)
+      } <span class="kw">else</span> {
+        log.info(s<span class="lit">"write succeeded, offset: ${rmetadata.offset()"</span>)
+      }
     }
   })
 )</pre></div></div>
