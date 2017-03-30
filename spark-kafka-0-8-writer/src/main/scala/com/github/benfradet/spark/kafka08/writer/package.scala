@@ -26,12 +26,7 @@ import org.apache.spark.streaming.dstream.DStream
 
 import scala.reflect.ClassTag
 
-/**
- * Implicit conversions between
- * [[DStream]] -> [[com.github.benfradet.spark.kafka08.writer.KafkaWriter]]
- * and
- * [[RDD]] -> [[com.github.benfradet.spark.kafka08.writer.KafkaWriter]]
- */
+/** Implicit conversions between [[DStream]] -> [[KafkaWriter]] and [[RDD]] -> [[KafkaWriter]] */
 package object writer {
   /**
    * Convert a [[DStream]] to a [[KafkaWriter]] implicitly

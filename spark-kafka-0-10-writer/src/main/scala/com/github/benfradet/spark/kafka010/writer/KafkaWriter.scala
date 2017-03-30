@@ -24,23 +24,20 @@ package com.github.benfradet.spark.kafka010.writer
 import java.util.Properties
 
 import org.apache.kafka.clients.producer.{Callback, ProducerRecord}
-import org.apache.spark.rdd.RDD
-import org.apache.spark.streaming.dstream.DStream
 
 import scala.reflect.ClassTag
 
 /**
- * Class used to write [[DStream]]s and [[RDD]]s to Kafka
+ * Class used to write DStreams and RDDs to Kafka
+ *
  * Example usage:
  * {{{
- *   import java.util.Properties
- *
  *   import com.github.benfradet.spark.kafka010.writer.KafkaWriter._
  *   import org.apache.kafka.common.serialization.StringSerializer
  *
  *   val topic = "my-topic"
  *   val producerConfig = {
- *     val p = new Properties()
+ *     val p = new java.util.Properties()
  *     p.setProperty("bootstrap.servers", "127.0.0.1:9092")
  *     p.setProperty("key.serializer", classOf[StringSerializer].getName)
  *     p.setProperty("value.serializer", classOf[StringSerializer].getName)
@@ -60,16 +57,24 @@ import scala.reflect.ClassTag
  *   )
  * }}}
  * It is also possible to provide a callback for each write to Kafka.
+ *
  * This is optional and has a value of None by default.
+ *
  * Example Usage:
  * {{{
+ *   @transient val log = org.apache.log4j.Logger.getLogger("spark-kafka-writer")
+ *
  *   val dStream: DStream[String] = ...
  *   dStream.writeToKafka(
  *     producerConfig,
  *     s => new ProducerRecord[String, String](topic, s),
  *     Some(new Callback with Serializable {
- *       override def onCompletion(metadata: RecordMetadata, e: Exception) = {
- *         if(Option(e).isDefined) "write failed!" else "write succeeded!"
+ *       override def onCompletion(metadata: RecordMetadata, e: Exception): Unit = {
+ *         if (Option(e).isDefined) {
+ *           log.warn("error sending message", e)
+ *         } else {
+ *           log.info(s"write succeeded, offset: ${metadata.offset()")
+ *         }
  *       }
  *     })
  *   )
@@ -79,8 +84,12 @@ import scala.reflect.ClassTag
  *     producerConfig,
  *     s => new ProducerRecord[String, String](localTopic, s),
  *     Some(new Callback with Serializable {
- *       override def onCompletion(metadata: RecordMetadata, e: Exception) = {
- *         if(Option(e).isDefined) "write failed!" else "write succeeded!"
+ *       override def onCompletion(metadata: RecordMetadata, e: Exception): Unit = {
+ *         if (Option(e).isDefined) {
+ *           log.warn("error sending message", e)
+ *         } else {
+ *           log.info(s"write succeeded, offset: ${metadata.offset()")
+ *         }
  *       }
  *     })
  *   )
@@ -88,8 +97,8 @@ import scala.reflect.ClassTag
  */
 abstract class KafkaWriter[T: ClassTag] extends Serializable {
   /**
-   * Write a [[DStream]] or [[RDD]] to Kafka
-   * @param producerConfig properties for a [[org.apache.kafka.clients.producer.KafkaProducer]]
+   * Write a DStream or RDD to Kafka
+   * @param producerConfig properties for a KafkaProducer
    * @param transformFunc a function used to transform values of T type into [[ProducerRecord]]s
    * @param callback an optional [[Callback]] to be called after each write, default value is None.
    */
