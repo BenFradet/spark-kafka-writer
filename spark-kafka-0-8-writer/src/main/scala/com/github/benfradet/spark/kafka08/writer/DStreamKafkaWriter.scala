@@ -36,7 +36,7 @@ class DStreamKafkaWriter[T: ClassTag](@transient private val dStream: DStream[T]
     extends KafkaWriter[T] with Serializable {
   /**
    * Write a [[DStream]] to Kafka
-   * @param producerConfig properties for a [[org.apache.kafka.clients.producer.KafkaProducer]]
+   * @param producerConfig properties for a KafkaProducer
    * @param transformFunc a function used to transform values of T type into [[ProducerRecord]]s
    * @param callback an optional [[Callback]] to be called after each write, default value is None.
    */

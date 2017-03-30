@@ -15,9 +15,9 @@ you're using Kafka 0.8 or 0.10 and your version of Spark:
 
 |   | Kafka 0.8 | Kafka 0.10 |
 |:-:|:-:|:-:|
-| **Spark 1.6.X** | `"com.github.benfradet" %% "spark-kafka-writer" % "0.1.0"` | :x: |
-| **Spark 2.0.X** | `"com.github.benfradet" %% "spark-kafka-0-8-writer" % "0.2.0"` | `"com.github.benfradet" %% "spark-kafka-0-10-writer" % "0.2.0"` |
 | **Spark 2.1.X** | `"com.github.benfradet" %% "spark-kafka-0-8-writer" % "0.3.0"` | `"com.github.benfradet" %% "spark-kafka-0-10-writer" % "0.3.0"` |
+| **Spark 2.0.X** | `"com.github.benfradet" %% "spark-kafka-0-8-writer" % "0.2.0"` | `"com.github.benfradet" %% "spark-kafka-0-10-writer" % "0.2.0"` |
+| **Spark 1.6.X** | `"com.github.benfradet" %% "spark-kafka-writer" % "0.1.0"` | :x: |
 
 ## Usage
 
@@ -53,15 +53,6 @@ rdd.writeToKafka(
 import com.github.benfradet.spark.kafka010.writer._
 import org.apache.kafka.common.serialization.StringSerializer
 
-val topic = "my-topic"
-val producerConfig = {
-  val p = new java.util.Properties()
-  p.setProperty("bootstrap.servers", "127.0.0.1:9092")
-  p.setProperty("key.serializer", classOf[StringSerializer].getName)
-  p.setProperty("value.serializer", classOf[StringSerializer].getName)
-  p
-}
-
 val dStream: DStream[String] = ...
 dStream.writeToKafka(
   producerConfig,
@@ -88,9 +79,6 @@ import org.apache.kafka.clients.producer.{Callback, ProducerRecord, RecordMetada
 
 @transient lazy val log = org.apache.log4j.Logger.getLogger("spark-kafka-writer")
 
-val topic = "my-topic"
-val producerConfig: java.util.Properties = ...
-
 val rdd: RDD[String] = ...
 rdd.writeToKafka(
   producerConfig,
@@ -113,11 +101,6 @@ rdd.writeToKafka(
 // replace by kafka08 if you're using Kafka 0.8
 import com.github.benfradet.spark.kafka010.writer._
 import org.apache.kafka.clients.producer.{Callback, ProducerRecord, RecordMetadata}
-
-@transient lazy val log = org.apache.log4j.Logger.getLogger("spark-kafka-writer")
-
-val topic = "my-topic"
-val producerConfig: java.util.Properties = ...
 
 val dStream: DStream[String] = ...
 dStream.writeToKafka(
