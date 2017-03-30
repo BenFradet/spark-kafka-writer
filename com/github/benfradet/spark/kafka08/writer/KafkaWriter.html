@@ -82,7 +82,7 @@ dStream.writeToKafka(
       <span class="kw">if</span> (<span class="std">Option</span>(e).isDefined) {
         log.warn(<span class="lit">"error sending message"</span>, e)
       } <span class="kw">else</span> {
-        log.info(s<span class="lit">"write succeeded, offset: ${rmetadata.offset()"</span>)
+        log.info(s<span class="lit">"write succeeded, offset: ${metadata.offset()"</span>)
       }
     }
   })
@@ -97,7 +97,7 @@ rdd.writeToKafka(
       <span class="kw">if</span> (<span class="std">Option</span>(e).isDefined) {
         log.warn(<span class="lit">"error sending message"</span>, e)
       } <span class="kw">else</span> {
-        log.info(s<span class="lit">"write succeeded, offset: ${rmetadata.offset()"</span>)
+        log.info(s<span class="lit">"write succeeded, offset: ${metadata.offset()"</span>)
       }
     }
   })
