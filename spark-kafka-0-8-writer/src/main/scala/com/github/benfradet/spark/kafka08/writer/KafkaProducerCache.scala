@@ -28,7 +28,7 @@ import org.apache.kafka.clients.producer.KafkaProducer
 import scala.collection.mutable
 
 /** Cache of [[KafkaProducer]]s */
-private[writer] object KafkaProducerCache {
+object KafkaProducerCache {
   private val producers = mutable.HashMap.empty[Properties, KafkaProducer[_, _]]
 
   /**
@@ -41,4 +41,7 @@ private[writer] object KafkaProducerCache {
       .getOrElseUpdate(producerConfig, new KafkaProducer[K, V](producerConfig))
       .asInstanceOf[KafkaProducer[K, V]]
   }
+
+  def close[K, V](producerConfig: Properties): Unit =
+    producers.remove(producerConfig).foreach(_.close())
 }
