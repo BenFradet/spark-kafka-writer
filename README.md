@@ -118,7 +118,13 @@ dStream.writeToKafka(
 )
 ```
 
+Check out [the Kafka documentation](http://kafka.apache.org/0102/javadoc/org/apache/kafka/clients/producer/KafkaProducer.html#send(org.apache.kafka.clients.producer.ProducerRecord,%20org.apache.kafka.clients.producer.Callback))
+to know more about callbacks.
+
 ### Java usage
+
+It's also possible to use the library from Java:
+
 ```java
 // Define a serializable Function1 separately
 abstract class SerializableFunc1<T, R> extends AbstractFunction1<T, R> implements Serializable {}
@@ -130,19 +136,18 @@ producerConfig.put("value.serializer", StringSerializer.class);
 
 KafkaWriter<String> kafkaWriter = new DStreamKafkaWriter<>(javaDStream.dstream(), scala.reflect.ClassTag$.MODULE$.apply(String.class));
 kafkaWriter.writeToKafka(producerConfig,
-                         new SerializableFunc1<String, ProducerRecord<String, String>>() {
-                             @Override
-                             public ProducerRecord<String, String> apply(final String s) {
-                                 return new ProducerRecord<>(topic, s);
-                             }
-                         },
-//                       new Some<>((metadata, exception) -> {}), // with callback, define your lambda here.
-                         Option.empty()                           // or without callback.
+     new SerializableFunc1<String, ProducerRecord<String, String>>() {
+         @Override
+         public ProducerRecord<String, String> apply(final String s) {
+             return new ProducerRecord<>(topic, s);
+         }
+     },
+     //new Some<>((metadata, exception) -> {}), // with callback, define your lambda here.
+     Option.empty()                             // or without callback.
 );
 ```
 
-Check out [the Kafka documentation](http://kafka.apache.org/0102/javadoc/org/apache/kafka/clients/producer/KafkaProducer.html#send(org.apache.kafka.clients.producer.ProducerRecord,%20org.apache.kafka.clients.producer.Callback))
-to know more about callbacks.
+However, #59 will provide a better Java API.
 
 ## Scaladoc
 
