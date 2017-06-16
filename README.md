@@ -134,7 +134,8 @@ producerConfig.put("bootstrap.servers", "localhost:9092");
 producerConfig.put("key.serializer", StringSerializer.class);
 producerConfig.put("value.serializer", StringSerializer.class);
 
-KafkaWriter<String> kafkaWriter = new DStreamKafkaWriter<>(javaDStream.dstream(), scala.reflect.ClassTag$.MODULE$.apply(String.class));
+KafkaWriter<String> kafkaWriter = new DStreamKafkaWriter<>(javaDStream.dstream(),
+    scala.reflect.ClassTag$.MODULE$.apply(String.class));
 kafkaWriter.writeToKafka(producerConfig,
      new SerializableFunc1<String, ProducerRecord<String, String>>() {
          @Override
