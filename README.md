@@ -66,7 +66,7 @@ It is also possible to assign a `Callback` from the Kafka Producer API that will
 be triggered after each write, this has a default value of None.
 
 The `Callback` must implement the `onCompletion` method and the `Exception`
-parameter will be `null` if the write was successful. 
+parameter will be `null` if the write was successful.
 
 Any `Callback` implementations will need to be serializable to be used in Spark.
 
@@ -116,6 +116,29 @@ dStream.writeToKafka(
     }
   })
 )
+```
+
+### Java usage
+```java
+// Define a serializable Function1 separately
+abstract class SerializableFunc1<T, R> extends AbstractFunction1<T, R> implements Serializable {}
+
+Properties producerConfig = new Properties();
+producerConfig.put("bootstrap.servers", "localhost:9092");
+producerConfig.put("key.serializer", StringSerializer.class);
+producerConfig.put("value.serializer", StringSerializer.class);
+
+KafkaWriter<String> kafkaWriter = new DStreamKafkaWriter<>(javaDStream.dstream(), scala.reflect.ClassTag$.MODULE$.apply(String.class));
+kafkaWriter.writeToKafka(producerConfig,
+                         new SerializableFunc1<String, ProducerRecord<String, String>>() {
+                             @Override
+                             public ProducerRecord<String, String> apply(final String s) {
+                                 return new ProducerRecord<>(topic, s);
+                             }
+                         },
+//                       new Some<>((metadata, exception) -> {}), // with callback, define your lambda here.
+                         Option.empty()                           // or without callback.
+);
 ```
 
 Check out [the Kafka documentation](http://kafka.apache.org/0102/javadoc/org/apache/kafka/clients/producer/KafkaProducer.html#send(org.apache.kafka.clients.producer.ProducerRecord,%20org.apache.kafka.clients.producer.Callback))
