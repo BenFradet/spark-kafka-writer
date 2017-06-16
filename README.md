@@ -148,7 +148,7 @@ kafkaWriter.writeToKafka(producerConfig,
 );
 ```
 
-However, #59 will provide a better Java API.
+However, [#59](https://github.com/benfradet/spark-kafka-writer/issues/59) will provide a better Java API.
 
 ## Scaladoc
 
