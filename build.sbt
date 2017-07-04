@@ -8,8 +8,8 @@ lazy val buildSettings = Seq(
 )
 
 lazy val sparkVersion = "2.1.1"
-lazy val kafka08Version = "0.8.2.1"
-lazy val kafka010Version = "0.10.0.0"
+lazy val kafka08Version = "0.8.2.2"
+lazy val kafka010Version = "0.10.2.1"
 
 lazy val compilerOptions = Seq(
   "-deprecation",
