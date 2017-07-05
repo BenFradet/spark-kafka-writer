@@ -91,14 +91,14 @@ lazy val v08 = (project in file("spark-kafka-0-8-writer"))
   .settings(moduleName := "spark-kafka-0-8-writer")
   .settings(allSettings)
   .settings(libraryDependencies ++= Seq(
-    "org.apache.spark" %% "spark-streaming-kafka-0-8" % sparkVersion,
-    "org.apache.kafka" %% "kafka" % kafka08Version
-  ).map(_ % "provided"))
+    "org.apache.kafka" %% "kafka" % kafka08Version,
+    "org.apache.spark" %% "spark-streaming-kafka-0-8" % sparkVersion % "test"
+  ))
 
 lazy val v010 = (project in file("spark-kafka-0-10-writer"))
   .settings(moduleName := "spark-kafka-0-10-writer")
   .settings(allSettings)
   .settings(libraryDependencies ++= Seq(
-    "org.apache.spark" %% "spark-streaming-kafka-0-10" % sparkVersion,
-    "org.apache.kafka" %% "kafka" % kafka010Version
-  ).map(_ % "provided"))
+    "org.apache.kafka" %% "kafka" % kafka010Version,
+    "org.apache.spark" %% "spark-streaming-kafka-0-10" % sparkVersion % "test"
+  ))
