@@ -2,11 +2,10 @@ language: scala
 
 scala:
   - 2.10.6
-  - 2.11.8
+  - 2.11.11
 
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION "project v08" clean coverage test coverageReport scalastyle
-  - sbt ++$TRAVIS_SCALA_VERSION "project v010" clean coverage test coverageReport scalastyle
+  - sbt ++$TRAVIS_SCALA_VERSION clean coverage test coverageReport scalastyle
   - sbt coverageAggregate
 
 after_success:
