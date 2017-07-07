@@ -8,7 +8,6 @@ lazy val buildSettings = Seq(
 )
 
 lazy val sparkVersion = "2.1.1"
-lazy val kafka08Version = "0.8.2.2"
 lazy val kafka010Version = "0.10.2.1"
 
 lazy val compilerOptions = Seq(
@@ -28,11 +27,14 @@ lazy val compilerOptions = Seq(
 
 lazy val baseSettings = Seq(
   libraryDependencies ++= Seq(
+    "org.apache.kafka" %% "kafka" % kafka010Version
+  ) ++ Seq(
     "org.apache.spark" %% "spark-core",
     "org.apache.spark" %% "spark-streaming"
   ).map(_ % sparkVersion % "provided") ++ Seq(
-    "org.scalatest" %% "scalatest" % "2.2.6" % "test"
-  ),
+    "org.apache.spark" %% "spark-streaming-kafka-0-10" % sparkVersion,
+    "org.scalatest" %% "scalatest" % "2.2.6"
+  ).map(_ % "test"),
   scalacOptions ++= compilerOptions,
   parallelExecution in Test := false
 )
@@ -65,12 +67,6 @@ lazy val publishSettings = Seq(
     </developers>
 )
 
-lazy val noPublishSettings = Seq(
-  publish := {},
-  publishLocal := {},
-  publishArtifact := false
-)
-
 lazy val allSettings = baseSettings ++ buildSettings ++ publishSettings
 
 lazy val docSettings = Seq(
@@ -80,25 +76,7 @@ lazy val docSettings = Seq(
 )
 
 lazy val sparkKafkaWriter = (project in file("."))
-  .settings(moduleName := "spark-kafka-writer")
+  .settings(moduleName := "spark-kafka-0-10-writer")
   .settings(allSettings)
   .enablePlugins(ScalaUnidocPlugin, GhpagesPlugin)
   .settings(docSettings)
-  .settings(noPublishSettings)
-  .aggregate(v08, v010)
-
-lazy val v08 = (project in file("spark-kafka-0-8-writer"))
-  .settings(moduleName := "spark-kafka-0-8-writer")
-  .settings(allSettings)
-  .settings(libraryDependencies ++= Seq(
-    "org.apache.kafka" %% "kafka" % kafka08Version,
-    "org.apache.spark" %% "spark-streaming-kafka-0-8" % sparkVersion % "test"
-  ))
-
-lazy val v010 = (project in file("spark-kafka-0-10-writer"))
-  .settings(moduleName := "spark-kafka-0-10-writer")
-  .settings(allSettings)
-  .settings(libraryDependencies ++= Seq(
-    "org.apache.kafka" %% "kafka" % kafka010Version,
-    "org.apache.spark" %% "spark-streaming-kafka-0-10" % sparkVersion % "test"
-  ))
