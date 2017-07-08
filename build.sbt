@@ -9,6 +9,7 @@ lazy val buildSettings = Seq(
 
 lazy val sparkVersion = "2.1.1"
 lazy val kafka010Version = "0.10.2.1"
+lazy val scalatestVersion = "3.0.3"
 
 lazy val compilerOptions = Seq(
   "-deprecation",
@@ -33,7 +34,7 @@ lazy val baseSettings = Seq(
     "org.apache.spark" %% "spark-streaming"
   ).map(_ % sparkVersion % "provided") ++ Seq(
     "org.apache.spark" %% "spark-streaming-kafka-0-10" % sparkVersion,
-    "org.scalatest" %% "scalatest" % "2.2.6"
+    "org.scalatest" %% "scalatest" % scalatestVersion
   ).map(_ % "test"),
   scalacOptions ++= compilerOptions,
   parallelExecution in Test := false
