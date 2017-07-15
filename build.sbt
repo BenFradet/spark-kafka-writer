@@ -10,6 +10,7 @@ lazy val buildSettings = Seq(
 lazy val sparkVersion = "2.1.1"
 lazy val kafka010Version = "0.10.2.1"
 lazy val scalatestVersion = "3.0.3"
+lazy val guavaVersion = "14.0.1"
 
 lazy val compilerOptions = Seq(
   "-deprecation",
@@ -29,10 +30,12 @@ lazy val compilerOptions = Seq(
 lazy val baseSettings = Seq(
   libraryDependencies ++= Seq(
     "org.apache.kafka" %% "kafka" % kafka010Version
-  ) ++ Seq(
+  ) ++ (Seq(
     "org.apache.spark" %% "spark-core",
     "org.apache.spark" %% "spark-streaming"
-  ).map(_ % sparkVersion % "provided") ++ Seq(
+  ).map(_ % sparkVersion) :+
+    "com.google.guava" % "guava" % guavaVersion
+  ).map(_ % "provided") ++ Seq(
     "org.apache.spark" %% "spark-streaming-kafka-0-10" % sparkVersion,
     "org.scalatest" %% "scalatest" % scalatestVersion
   ).map(_ % "test"),

@@ -31,13 +31,11 @@ import com.github.benfradet.spark.kafka010.writer._
 import org.apache.kafka.common.serialization.StringSerializer
 
 val topic = "my-topic"
-val producerConfig = {
-  val p = new java.util.Properties()
-  p.setProperty("bootstrap.servers", "127.0.0.1:9092")
-  p.setProperty("key.serializer", classOf[StringSerializer].getName)
-  p.setProperty("value.serializer", classOf[StringSerializer].getName)
-  p
-}
+val producerConfig = Map(
+  "bootstrap.servers" -> "127.0.0.1:9092",
+  "key.serializer" -> classOf[StringSerializer].getName,
+  "value.serializer" -> classOf[StringSerializer].getName
+)
 
 val rdd: RDD[String] = ...
 rdd.writeToKafka(
@@ -129,14 +127,14 @@ It's also possible to use the library from Java:
 // Define a serializable Function1 separately
 abstract class SerializableFunc1<T, R> extends AbstractFunction1<T, R> implements Serializable {}
 
-Properties producerConfig = new Properties();
+Map<String, Object> producerConfig = new HashMap<String, Object>();
 producerConfig.put("bootstrap.servers", "localhost:9092");
 producerConfig.put("key.serializer", StringSerializer.class);
 producerConfig.put("value.serializer", StringSerializer.class);
 
 KafkaWriter<String> kafkaWriter = new DStreamKafkaWriter<>(javaDStream.dstream(),
     scala.reflect.ClassTag$.MODULE$.apply(String.class));
-kafkaWriter.writeToKafka(producerConfig,
+kafkaWriter.writeToKafka(producerConfig.asScala,
      new SerializableFunc1<String, ProducerRecord<String, String>>() {
          @Override
          public ProducerRecord<String, String> apply(final String s) {
