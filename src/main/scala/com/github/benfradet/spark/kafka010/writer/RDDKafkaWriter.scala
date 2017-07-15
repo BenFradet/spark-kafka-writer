@@ -21,8 +21,6 @@
 
 package com.github.benfradet.spark.kafka010.writer
 
-import java.util.Properties
-
 import org.apache.kafka.clients.producer.{Callback, ProducerRecord}
 import org.apache.spark.rdd.RDD
 
@@ -36,12 +34,12 @@ class RDDKafkaWriter[T: ClassTag](@transient private val rdd: RDD[T])
     extends KafkaWriter[T] with Serializable {
   /**
    * Write a [[RDD]] to Kafka
-   * @param producerConfig properties for a KafkaProducer
+   * @param producerConfig producer configuration for creating KafkaProducer
    * @param transformFunc a function used to transform values of T type into [[ProducerRecord]]s
    * @param callback an optional [[Callback]] to be called after each write, default value is None.
    */
   override def writeToKafka[K, V](
-    producerConfig: Properties,
+    producerConfig: Map[String, Object],
     transformFunc: T => ProducerRecord[K, V],
     callback: Option[Callback] = None
   ): Unit =

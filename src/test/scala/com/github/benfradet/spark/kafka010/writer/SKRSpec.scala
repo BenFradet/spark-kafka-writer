@@ -21,7 +21,6 @@
 
 package com.github.benfradet.spark.kafka010.writer
 
-import java.util.Properties
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializer}
@@ -93,13 +92,11 @@ trait SKRSpec
     results
   }
 
-  val producerConfig = {
-    val p = new Properties()
-    p.setProperty("bootstrap.servers", "127.0.0.1:9092")
-    p.setProperty("key.serializer", classOf[StringSerializer].getName)
-    p.setProperty("value.serializer", classOf[StringSerializer].getName)
-    p
-  }
+  val producerConfig = Map(
+    "bootstrap.servers" -> "127.0.0.1:9092",
+    "key.serializer" -> classOf[StringSerializer].getName,
+    "value.serializer" -> classOf[StringSerializer].getName
+  )
 }
 
 object SKRSpec {

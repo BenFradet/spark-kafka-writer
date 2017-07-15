@@ -21,8 +21,6 @@
 
 package com.github.benfradet.spark.kafka010.writer
 
-import java.util.Properties
-
 import org.apache.kafka.clients.producer.{Callback, ProducerRecord}
 
 import scala.reflect.ClassTag
@@ -36,13 +34,11 @@ import scala.reflect.ClassTag
  *   import org.apache.kafka.common.serialization.StringSerializer
  *
  *   val topic = "my-topic"
- *   val producerConfig = {
- *     val p = new java.util.Properties()
- *     p.setProperty("bootstrap.servers", "127.0.0.1:9092")
- *     p.setProperty("key.serializer", classOf[StringSerializer].getName)
- *     p.setProperty("value.serializer", classOf[StringSerializer].getName)
- *     p
- *   }
+ *   val producerConfig = Map(
+ *     "bootstrap.servers" -> "127.0.0.1:9092",
+ *     "key.serializer" -> classOf[StringSerializer].getName,
+ *     "value.serializer" -> classOf[StringSerializer].getName
+ *   )
  *
  *   val dStream: DStream[String] = ...
  *   dStream.writeToKafka(
@@ -98,12 +94,12 @@ import scala.reflect.ClassTag
 abstract class KafkaWriter[T: ClassTag] extends Serializable {
   /**
    * Write a DStream or RDD to Kafka
-   * @param producerConfig properties for a KafkaProducer
+   * @param producerConfig producer configuration for creating KafkaProducer
    * @param transformFunc a function used to transform values of T type into [[ProducerRecord]]s
    * @param callback an optional [[Callback]] to be called after each write, default value is None.
    */
   def writeToKafka[K, V](
-    producerConfig: Properties,
+    producerConfig: Map[String, Object],
     transformFunc: T => ProducerRecord[K, V],
     callback: Option[Callback] = None
   ): Unit
