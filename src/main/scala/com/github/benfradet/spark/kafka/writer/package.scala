@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package com.github.benfradet.spark.kafka010
+package com.github.benfradet.spark.kafka
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.dstream.DStream

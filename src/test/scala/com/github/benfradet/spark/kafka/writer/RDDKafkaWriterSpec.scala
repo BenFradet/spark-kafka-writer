@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package com.github.benfradet.spark.kafka010.writer
+package com.github.benfradet.spark.kafka.writer
 
 import org.apache.kafka.clients.producer._
 
@@ -27,7 +27,7 @@ import scala.concurrent.duration._
 
 class RDDKafkaWriterSpec extends SKRSpec {
 
-  "a RDDKafkaWriterSpec v010" when {
+  "a RDDKafkaWriterSpec" when {
     "given a RDD" should {
       "write its content to Kafka" in {
         val localTopic = topic

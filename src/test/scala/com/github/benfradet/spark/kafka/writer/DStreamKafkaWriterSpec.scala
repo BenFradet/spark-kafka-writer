@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package com.github.benfradet.spark.kafka010.writer
+package com.github.benfradet.spark.kafka.writer
 
 import org.apache.kafka.clients.producer._
 import org.apache.spark.rdd.RDD
@@ -30,7 +30,7 @@ import scala.concurrent.duration._
 
 class DStreamKafkaWriterSpec extends SKRSpec {
 
-  "a DStreamKafkaWriter v010" when {
+  "a DStreamKafkaWriter" when {
     "given a dstream" should {
       "write its content to Kafka" in {
         val localTopic = topic

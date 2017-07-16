@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package com.github.benfradet.spark.kafka010.writer
+package com.github.benfradet.spark.kafka.writer
 
 import com.google.common.cache.Cache
 import org.apache.kafka.clients.producer._
