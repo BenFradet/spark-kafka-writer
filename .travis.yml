@@ -4,6 +4,9 @@ scala:
   - 2.10.6
   - 2.11.11
 
+jdk:
+  - oraclejdk8
+
 script:
   - sbt ++$TRAVIS_SCALA_VERSION clean coverage test coverageReport scalastyle
   - sbt coverageAggregate
