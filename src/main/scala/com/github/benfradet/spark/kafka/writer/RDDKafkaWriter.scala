@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package com.github.benfradet.spark.kafka010.writer
+package com.github.benfradet.spark.kafka.writer
 
 import org.apache.kafka.clients.producer.{Callback, ProducerRecord}
 import org.apache.spark.rdd.RDD

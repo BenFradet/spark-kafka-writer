@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package com.github.benfradet.spark.kafka010.writer
+package com.github.benfradet.spark.kafka.writer
 
 import org.apache.kafka.clients.producer.{Callback, ProducerRecord}
 
@@ -30,7 +30,7 @@ import scala.reflect.ClassTag
  *
  * Example usage:
  * {{{
- *   import com.github.benfradet.spark.kafka010.writer.KafkaWriter._
+ *   import com.github.benfradet.spark.kafka.writer.KafkaWriter._
  *   import org.apache.kafka.common.serialization.StringSerializer
  *
  *   val topic = "my-topic"
