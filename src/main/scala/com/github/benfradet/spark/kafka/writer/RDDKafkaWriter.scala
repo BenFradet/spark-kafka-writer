@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2016, Benjamin Fradet, and other contributors.
+ * Copyright (c) 2016-2017, Benjamin Fradet, and other contributors.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
