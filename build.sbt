@@ -8,7 +8,7 @@ lazy val buildSettings = Seq(
 )
 
 lazy val sparkVersion = "2.2.0"
-lazy val kafka010Version = "0.10.2.1"
+lazy val kafkaVersion = "0.10.2.1"
 lazy val scalatestVersion = "3.0.3"
 lazy val guavaVersion = "14.0.1"
 
@@ -29,9 +29,10 @@ lazy val compilerOptions = Seq(
 
 lazy val baseSettings = Seq(
   libraryDependencies ++= Seq(
-    "org.apache.kafka" %% "kafka" % kafka010Version
+    "org.apache.kafka" %% "kafka" % kafkaVersion
   ) ++ (Seq(
     "org.apache.spark" %% "spark-core",
+    "org.apache.spark" %% "spark-sql",
     "org.apache.spark" %% "spark-streaming"
   ).map(_ % sparkVersion) :+
     "com.google.guava" % "guava" % guavaVersion
