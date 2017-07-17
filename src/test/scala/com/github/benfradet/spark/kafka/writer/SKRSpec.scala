@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializer}
 import org.apache.spark.SparkConf
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.streaming.kafka010.{ConsumerStrategies, KafkaUtils, LocationStrategies}
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.scalatest.concurrent.Eventually
@@ -59,14 +60,22 @@ trait SKRSpec
 
   var topic: String = _
   var ssc: StreamingContext = _
+  var spark: SparkSession = _
   override def afterEach(): Unit = {
     if (ssc != null) {
       ssc.stop()
       ssc = null
     }
+    if (spark != null) {
+      spark.stop()
+      spark = null
+    }
   }
   override def beforeEach(): Unit = {
     ssc = new StreamingContext(sparkConf, Seconds(1))
+    spark = SparkSession.builder
+      .config(sparkConf)
+      .getOrCreate()
     topic = s"topic-${Random.nextInt()}"
     ktu.createTopics(topic)
   }

@@ -26,7 +26,7 @@ import org.apache.kafka.clients.producer.{Callback, ProducerRecord}
 import scala.reflect.ClassTag
 
 /**
- * Class used to write DStreams and RDDs to Kafka
+ * Class used to write DStreams, RDDs and Datasets to Kafka
  *
  * Example usage:
  * {{{
@@ -51,6 +51,12 @@ import scala.reflect.ClassTag
  *     producerConfig,
  *     s => new ProducerRecord[String, String](localTopic, s)
  *   )
+ *
+ *   val dataset: Dataset[Foo] = ...
+ *   dataset.writeToKafka(
+ *     producerConfig,
+ *     f => new ProducerRecord[String, String](localTopic, f.toString)
+ *   )
  * }}}
  * It is also possible to provide a callback for each write to Kafka.
  *
@@ -74,26 +80,11 @@ import scala.reflect.ClassTag
  *       }
  *     })
  *   )
- *
- *   val rdd: RDD[String] = ...
- *   rdd.writeToKafka(
- *     producerConfig,
- *     s => new ProducerRecord[String, String](localTopic, s),
- *     Some(new Callback with Serializable {
- *       override def onCompletion(metadata: RecordMetadata, e: Exception): Unit = {
- *         if (Option(e).isDefined) {
- *           log.warn("error sending message", e)
- *         } else {
- *           log.info(s"write succeeded, offset: ${metadata.offset()")
- *         }
- *       }
- *     })
- *   )
  * }}}
  */
 abstract class KafkaWriter[T: ClassTag] extends Serializable {
   /**
-   * Write a DStream or RDD to Kafka
+   * Write a DStream, RDD, or Dataset to Kafka
    * @param producerConfig producer configuration for creating KafkaProducer
    * @param transformFunc a function used to transform values of T type into [[ProducerRecord]]s
    * @param callback an optional [[Callback]] to be called after each write, default value is None.

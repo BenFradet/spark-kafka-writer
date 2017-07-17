@@ -22,11 +22,16 @@
 package com.github.benfradet.spark.kafka
 
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.Dataset
 import org.apache.spark.streaming.dstream.DStream
 
 import scala.reflect.ClassTag
 
-/** Implicit conversions between [[DStream]] -> [[KafkaWriter]] and [[RDD]] -> [[KafkaWriter]] */
+/** Implicit conversions between
+ *  - [[DStream]] -> [[KafkaWriter]]
+ *  - [[RDD]] -> [[KafkaWriter]]
+ *  - [[Dataset]] -> [[KafkaWriter]]
+ */
 package object writer {
   /**
    * Convert a [[DStream]] to a [[KafkaWriter]] implicitly
@@ -43,4 +48,12 @@ package object writer {
    */
   implicit def rddToKafkaWriter[T: ClassTag, K, V](rdd: RDD[T]): KafkaWriter[T] =
     new RDDKafkaWriter[T](rdd)
+
+  /**
+   * Convert a [[Dataset]] to a [[KafkaWriter]] implicitly
+   * @param dataset [[Dataset]] to be converted
+   * @return [[KafkaWriter]] ready to write messages to Kafka
+   */
+  implicit def datasetToKafkaWriter[T: ClassTag, K, V](dataset: Dataset[T]): KafkaWriter[T] =
+    new DatasetKafkaWriter[T](dataset)
 }
