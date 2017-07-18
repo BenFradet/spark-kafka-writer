@@ -34,6 +34,8 @@ import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Matchers, WordSpec}
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
+case class Foo(a: Int, b: String)
+
 trait SKRSpec
   extends WordSpec
   with Matchers
