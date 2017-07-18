@@ -22,20 +22,21 @@
 package com.github.benfradet.spark.kafka.writer
 
 import org.apache.kafka.clients.producer._
+import org.apache.spark.sql.Row
 
 import scala.concurrent.duration._
 
-class DatasetKafkaWriterSpec extends SKRSpec {
+class DataFrameKafkaWriterSpec extends SKRSpec {
 
-  "a DatasetKafkaWriter" when {
-    "given a Dataset" should {
+  "a DataFrameKafkaWriter" when {
+    "given a DataFrame" should {
       "write its content to Kafka" in {
         val s = spark
         import s.implicits._
         val localTopic = topic
         val msgs = (1 to 10).map(i => Foo(i, i.toString))
-        val dataset = s.createDataset[Foo](msgs)
-        dataset.writeToKafka(
+        val dataFrame = s.createDataFrame(msgs)
+        dataFrame.writeToKafka(
           producerConfig,
           s => new ProducerRecord[String, String](localTopic, s.toString)
         )
@@ -44,7 +45,7 @@ class DatasetKafkaWriterSpec extends SKRSpec {
 
         ssc.start()
         eventually(timeout(30.seconds), interval(1.second)) {
-          results shouldBe msgs.map(_.toString)
+          results shouldBe msgs.map(f => Row(f.a, f.b).toString)
         }
       }
 
@@ -53,8 +54,8 @@ class DatasetKafkaWriterSpec extends SKRSpec {
         import s.implicits._
         val localTopic = topic
         val msgs = (1 to 10).map(i => Foo(i, i.toString))
-        val dataset = s.createDataset[Foo](msgs)
-        dataset.writeToKafka(
+        val dataFrame = s.createDataFrame(msgs)
+        dataFrame.writeToKafka(
           producerConfig,
           s => new ProducerRecord[String, String](localTopic, s.toString),
           Some(new Callback with Serializable {
