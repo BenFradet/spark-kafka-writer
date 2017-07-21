@@ -57,6 +57,12 @@ import scala.reflect.ClassTag
  *     producerConfig,
  *     f => new ProducerRecord[String, String](localTopic, f.toString)
  *   )
+ *
+ *   val dataFrame: DataFrame = ...
+ *   dataFrame.writeToKafka(
+ *     producerConfig,
+ *     r => new ProducerRecord[String, String](localTopic, r.get(0).toString)
+ *   )
  * }}}
  * It is also possible to provide a callback for each write to Kafka.
  *

@@ -81,7 +81,7 @@ lazy val docSettings = Seq(
 )
 
 lazy val sparkKafkaWriter = (project in file("."))
-  .settings(moduleName := "spark-kafka-0-10-writer")
+  .settings(moduleName := "spark-kafka-writer")
   .settings(allSettings)
   .enablePlugins(ScalaUnidocPlugin, GhpagesPlugin)
   .settings(docSettings)
