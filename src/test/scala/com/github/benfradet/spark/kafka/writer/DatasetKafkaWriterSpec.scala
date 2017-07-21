@@ -37,7 +37,7 @@ class DatasetKafkaWriterSpec extends SKRSpec {
         val dataset = s.createDataset[Foo](msgs)
         dataset.writeToKafka(
           producerConfig,
-          s => new ProducerRecord[String, String](localTopic, s.toString)
+          f => new ProducerRecord[String, String](localTopic, f.toString)
         )
 
         val results = collect(ssc, localTopic)
@@ -56,7 +56,7 @@ class DatasetKafkaWriterSpec extends SKRSpec {
         val dataset = s.createDataset[Foo](msgs)
         dataset.writeToKafka(
           producerConfig,
-          s => new ProducerRecord[String, String](localTopic, s.toString),
+          f => new ProducerRecord[String, String](localTopic, f.toString),
           Some(new Callback with Serializable {
             override def onCompletion(metadata: RecordMetadata, exception: Exception): Unit = {
               SKRSpec.callbackTriggerCount.incrementAndGet()
