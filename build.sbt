@@ -7,7 +7,7 @@ lazy val buildSettings = Seq(
   crossScalaVersions := Seq("2.10.6", "2.11.11")
 )
 
-lazy val sparkVersion = "2.2.0"
+lazy val sparkVersion = "2.2.2"
 lazy val kafkaVersion = "0.10.2.2"
 lazy val scalatestVersion = "3.0.5"
 lazy val guavaVersion = "14.0.1"
