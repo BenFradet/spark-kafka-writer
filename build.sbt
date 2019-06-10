@@ -9,7 +9,7 @@ lazy val buildSettings = Seq(
 
 lazy val sparkVersion = "2.2.3"
 lazy val kafkaVersion = "0.10.2.2"
-lazy val scalatestVersion = "3.0.7"
+lazy val scalatestVersion = "3.0.8"
 lazy val guavaVersion = "14.0.1"
 
 lazy val compilerOptions = Seq(
