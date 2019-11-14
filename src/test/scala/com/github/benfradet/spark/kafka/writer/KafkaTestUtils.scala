@@ -23,12 +23,11 @@ package com.github.benfradet.spark.kafka.writer
 
 import java.io.File
 import java.net.InetSocketAddress
+import java.util.Arrays.asList
 import java.util.Properties
 
-import kafka.admin.AdminUtils
-import kafka.consumer.ConsumerConnector
 import kafka.server.{KafkaConfig, KafkaServerStartable}
-import kafka.utils.ZkUtils
+import org.apache.kafka.clients.admin.{AdminClient, NewTopic}
 import org.apache.zookeeper.server.{NIOServerCnxnFactory, ZooKeeperServer}
 
 import scala.util.Random
@@ -37,19 +36,16 @@ class KafkaTestUtils {
   // zk
   private val zkHost = "localhost"
   private val zkPort = 2181
-  private val zkSessionTimeout = 6000
-  private val zkConnectionTimeout = 6000
   private var zk: EmbeddedZookeeper = _
-  private var zkUtils: ZkUtils = _
   private var zkReady = false
 
   // kafka
   private val brokerHost = "localhost"
   private val brokerPort = 9092
   private var kafkaServer: KafkaServerStartable = _
-  private var consumer: ConsumerConnector = _
   private var topicCountMap = Map.empty[String, Int]
   private var brokerReady = false
+  private var kafkaAdminClient: AdminClient = _
 
   /** Zookeeper address */
   def zkAddress: String = {
@@ -63,13 +59,6 @@ class KafkaTestUtils {
     s"$brokerHost:$brokerPort"
   }
 
-  /** Zookeeper client */
-  def zookeeperClient: ZkUtils = {
-    assert(zkReady, "Zk not ready, cannot get zk client")
-    Option(zkUtils).getOrElse(
-      throw new IllegalStateException("Zk client not initialized"))
-  }
-
   /** Start the Zookeeper and Kafka servers */
   def setup(): Unit = {
     setupEmbeddedZookeeper()
@@ -78,8 +67,6 @@ class KafkaTestUtils {
 
   private def setupEmbeddedZookeeper(): Unit = {
     zk = new EmbeddedZookeeper(zkHost, zkPort)
-    zkUtils = ZkUtils(s"$zkHost:$zkPort", zkSessionTimeout, zkConnectionTimeout,
-      isZkSecurityEnabled = false)
     zkReady = true
   }
 
@@ -89,6 +76,11 @@ class KafkaTestUtils {
     kafkaServer = new KafkaServerStartable(kafkaConfig)
     kafkaServer.startup()
     brokerReady = true
+
+    val adminClientProps = new Properties()
+    adminClientProps
+      .setProperty("bootstrap.servers", s"${kafkaConfig.hostName}:${kafkaConfig.port}")
+    kafkaAdminClient = AdminClient.create(adminClientProps)
   }
 
   /** Close the Kafka producer, consumer and server as well as the Zookeeper client and server */
@@ -96,19 +88,14 @@ class KafkaTestUtils {
     brokerReady = false
     zkReady = false
 
-    if (consumer != null) {
-      consumer.shutdown()
-      consumer = null
-    }
-
     if (kafkaServer != null) {
       kafkaServer.shutdown()
       kafkaServer = null
     }
 
-    if (zkUtils != null) {
-      zkUtils.close()
-      zkUtils = null
+    if (kafkaAdminClient != null) {
+      kafkaAdminClient.close()
+      kafkaAdminClient = null
     }
 
     if (zk != null) {
@@ -123,7 +110,7 @@ class KafkaTestUtils {
   @scala.annotation.varargs
   def createTopics(topics: String*): Unit =
     for (topic <- topics) {
-      AdminUtils.createTopic(zkUtils, topic, 1, 1)
+      kafkaAdminClient.createTopics(asList(new NewTopic(topic, 1, 1)))
       Thread.sleep(1000)
       topicCountMap = topicCountMap + (topic -> 1)
     }
@@ -144,6 +131,7 @@ class KafkaTestUtils {
     props.put("port", brokerPort.toString)
     props.put("zookeeper.connect", zkAddress)
     props.put("zookeeper.connection.timeout.ms", "10000")
+    props.put("offsets.topic.replication.factor", "1")
     props
   }
 
