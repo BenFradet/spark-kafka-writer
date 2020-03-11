@@ -110,7 +110,7 @@ class KafkaTestUtils {
   @scala.annotation.varargs
   def createTopics(topics: String*): Unit =
     for (topic <- topics) {
-      kafkaAdminClient.createTopics(asList(new NewTopic(topic, 1, 1)))
+      kafkaAdminClient.createTopics(asList(new NewTopic(topic, 1, 1: Short)))
       Thread.sleep(1000)
       topicCountMap = topicCountMap + (topic -> 1)
     }
