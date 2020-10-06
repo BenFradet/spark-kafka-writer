@@ -65,7 +65,7 @@ import org.apache.kafka.common.serialization.StringSerializer
 
 case class Foo(a: Int, b: String)
 val dataset: Dataset[Foo] = ...
-dStream.writeToKafka(
+dataset.writeToKafka(
   producerConfig,
   foo => new ProducerRecord[String, String](topic, foo.toString)
 )
@@ -78,7 +78,7 @@ import com.github.benfradet.spark.kafka.writer._
 import org.apache.kafka.common.serialization.StringSerializer
 
 val dataFrame: DataFrame = ...
-dStream.writeToKafka(
+dataFrame.writeToKafka(
   producerConfig,
   row => new ProducerRecord[String, String](topic, row.toString)
 )
