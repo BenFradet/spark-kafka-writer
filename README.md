@@ -15,6 +15,7 @@ you're using Kafka 0.8 or 0.10 and your version of Spark:
 
 |   | Kafka 0.8 | Kafka 0.10 |
 |:-:|:-:|:-:|
+| **Spark 2.4.X** | :x:                                                            | `"com.github.benfradet" %% "spark-kafka-writer" % "0.5.0"`      |
 | **Spark 2.2.X** | :x:                                                            | `"com.github.benfradet" %% "spark-kafka-writer" % "0.4.0"`      |
 | **Spark 2.1.X** | `"com.github.benfradet" %% "spark-kafka-0-8-writer" % "0.3.0"` | `"com.github.benfradet" %% "spark-kafka-0-10-writer" % "0.3.0"` |
 | **Spark 2.0.X** | `"com.github.benfradet" %% "spark-kafka-0-8-writer" % "0.2.0"` | `"com.github.benfradet" %% "spark-kafka-0-10-writer" % "0.2.0"` |
