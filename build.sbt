@@ -4,7 +4,7 @@ lazy val buildSettings = Seq(
   organization := "com.github.benfradet",
   version := "0.6.0-SNAPSHOT",
   scalaVersion := "2.12.10",
-  crossScalaVersions := Seq("2.11.12", "2.12.10")
+  crossScalaVersions := Seq("2.13.5", "2.12.10")
 )
 
 lazy val sparkVersion = "2.4.7"
