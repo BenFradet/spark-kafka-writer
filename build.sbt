@@ -3,13 +3,13 @@ import com.typesafe.sbt.SbtGit.GitKeys._
 lazy val buildSettings = Seq(
   organization := "com.github.benfradet",
   version := "0.6.0-SNAPSHOT",
-  scalaVersion := "2.13.6",
-  crossScalaVersions := Seq("2.11.12", "2.13.6")
+  scalaVersion := "2.12.15",
+  crossScalaVersions := Seq("2.11.12", "2.12.15")
 )
 
 lazy val sparkVersion = "2.4.8"
 lazy val kafkaVersion = "2.4.1"
-lazy val scalatestVersion = "3.2.9"
+lazy val scalatestVersion = "3.2.10"
 lazy val guavaVersion = "14.0.1"
 
 lazy val compilerOptions = Seq(
