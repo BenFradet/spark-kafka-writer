@@ -9,8 +9,8 @@ lazy val buildSettings = Seq(
 
 lazy val sparkVersion = "2.4.8"
 lazy val kafkaVersion = "2.4.1"
-lazy val scalatestVersion = "3.2.10"
-lazy val guavaVersion = "31.0.1-jre"
+lazy val scalatestVersion = "3.2.11"
+lazy val guavaVersion = "14.0.1"
 
 lazy val compilerOptions = Seq(
   "-deprecation",
