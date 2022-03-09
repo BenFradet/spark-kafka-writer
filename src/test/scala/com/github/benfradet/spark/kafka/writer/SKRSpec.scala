@@ -21,8 +21,9 @@
 
 package com.github.benfradet.spark.kafka.writer
 
-import java.util.concurrent.atomic.AtomicInteger
+import io.github.embeddedkafka.{EmbeddedKafka, EmbeddedKafkaConfig}
 
+import java.util.concurrent.atomic.AtomicInteger
 import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializer}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
@@ -43,23 +44,25 @@ trait SKRSpec
   with Matchers
   with BeforeAndAfterEach
   with BeforeAndAfterAll
-  with Eventually {
+  with Eventually
+  with EmbeddedKafka {
+  private val brokerHost = "localhost"
+  private val brokerPort = 9092
+  implicit val config = EmbeddedKafkaConfig(kafkaPort = brokerPort)
 
   val sparkConf = new SparkConf()
     .setMaster("local[1]")
     .setAppName(getClass.getSimpleName)
 
-  var ktu: KafkaTestUtils = _
   override def beforeAll(): Unit = {
-    ktu = new KafkaTestUtils
-    ktu.setup()
+    if(EmbeddedKafka.isRunning) {
+      EmbeddedKafka.stop()
+    }
+    EmbeddedKafka.start()
   }
   override def afterAll(): Unit = {
     SKRSpec.callbackTriggerCount.set(0)
-    if (ktu != null) {
-      ktu.tearDown()
-      ktu = null
-    }
+    EmbeddedKafka.stop()
   }
 
   var topic: String = _
@@ -81,12 +84,12 @@ trait SKRSpec
       .config(sparkConf)
       .getOrCreate()
     topic = s"topic-${Random.nextInt()}"
-    ktu.createTopics(topic)
+    EmbeddedKafka.createCustomTopic(topic)
   }
 
   def collect(ssc: StreamingContext, topic: String): ArrayBuffer[String] = {
     val kafkaParams = Map(
-      "bootstrap.servers" -> ktu.brokerAddress,
+      "bootstrap.servers" -> s"$brokerHost:$brokerPort",
       "auto.offset.reset" -> "earliest",
       "key.deserializer" -> classOf[StringDeserializer],
       "value.deserializer" -> classOf[StringDeserializer],
