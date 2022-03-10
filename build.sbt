@@ -2,7 +2,7 @@ import com.typesafe.sbt.SbtGit.GitKeys._
 
 lazy val buildSettings = Seq(
   organization := "com.github.benfradet",
-  version := "0.6.0-SNAPSHOT",
+  version := "0.6.0",
   scalaVersion := "2.12.15",
   crossScalaVersions := Seq("2.12.15", "2.13.8")
 )
