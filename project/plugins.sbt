@@ -1,6 +1,6 @@
 // Tests
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
-addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.9.3")
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.0.2")
 
 // Docs
 addSbtPlugin("com.github.sbt" % "sbt-unidoc" % "0.5.0")
